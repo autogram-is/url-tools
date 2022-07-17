@@ -1,7 +1,8 @@
-import {ParsedUrl} from './parsed-url';
-import {UrlMutator} from './mutations';
-
+import {URL} from 'node:url';
 import * as _ from 'lodash';
+
+import {ParsedUrl} from './parsed-url';
+import {UrlMutator, Mutators} from './mutations';
 
 export class UrlSet extends Array<ParsedUrl> {
   constructor(items?: ParsedUrl[]) {
@@ -23,7 +24,10 @@ export class UrlSet extends Array<ParsedUrl> {
     return true;
   }
 
-  normalize(normalizer?: UrlMutator, deduplicate:boolean = true): UrlSet {
+  normalize(
+    normalizer: UrlMutator = Mutators.DefaultNormalizer,
+    deduplicate = true
+  ): UrlSet {
     let normalizedUrls = new UrlSet();
     if (normalizer) {
       this.forEach(url => {
@@ -31,7 +35,7 @@ export class UrlSet extends Array<ParsedUrl> {
       });
     }
     if (deduplicate) {
-      normalizedUrls = _.uniqBy(normalizedUrls, 'href') as UrlSet
+      normalizedUrls = _.uniqBy(normalizedUrls, 'href') as UrlSet;
     }
     return normalizedUrls;
   }
