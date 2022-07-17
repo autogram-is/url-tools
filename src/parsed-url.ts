@@ -1,5 +1,6 @@
 import {URL} from 'node:url';
 import * as tld from 'tldjs';
+
 export class ParsedUrl extends URL {
   normalized = false;
 
