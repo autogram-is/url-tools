@@ -1,5 +1,5 @@
 {
-  "name": "url-tools",
+  "name": "@autogram/url-tools",
   "version": "1.0.0",
   "description": "Helper classes for validating, filtering, and normalizing URLs in bulk",
   "main": "index.js",
