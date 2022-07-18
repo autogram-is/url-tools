@@ -3,6 +3,7 @@ import {UrlMutator, Mutators} from './mutations';
 
 export class ParsedUrlSet extends Set<string> {
   static DefaultNormalizer: UrlMutator = Mutators.DefaultNormalizer;
+  readonly rejected:Set<string> = new Set<string>();
 
   public constructor(
     values: Array<string | ParsedUrl> = [],
@@ -14,7 +15,11 @@ export class ParsedUrlSet extends Set<string> {
 
   override add(value: string | ParsedUrl, strict = false): this {
     const parsed = this.parseAndNormalize(value, strict);
-    if (parsed) super.add(parsed.href);
+    if (parsed) {
+      super.add(parsed.href);
+    } else {
+      this.rejected.add(value as string);
+    }
     return this;
   }
 
@@ -28,6 +33,11 @@ export class ParsedUrlSet extends Set<string> {
     const parsed = this.parseAndNormalize(value, strict);
     if (parsed) return super.delete(parsed.href);
     else return false;
+  }
+
+  override clear(): void {
+    this.rejected.clear();
+    super.clear();
   }
 
   addItems(
