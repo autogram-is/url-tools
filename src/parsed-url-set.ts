@@ -3,7 +3,7 @@ import {UrlMutator, Mutators} from './mutations';
 
 export class ParsedUrlSet extends Set<string> {
   static DefaultNormalizer: UrlMutator = Mutators.DefaultNormalizer;
-  readonly rejected:Set<string> = new Set<string>();
+  readonly rejected: Set<string> = new Set<string>();
 
   public constructor(
     values: Array<string | ParsedUrl> = [],
