@@ -5,9 +5,11 @@ export class ParsedUrlSet extends Set<string> {
   static DefaultNormalizer: UrlMutator = Mutators.DefaultNormalizer;
 
   public constructor(
+    values: Array<string | ParsedUrl> = [],
     public normalizer: UrlMutator = ParsedUrlSet.DefaultNormalizer
   ) {
     super();
+    this.addItems(values);
   }
 
   override add(value: string | ParsedUrl, strict = false): this {

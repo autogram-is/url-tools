@@ -18,15 +18,15 @@ type StripQueryParamOptions = {
 
 const Mutators = {
   DefaultNormalizer: function (url: ParsedUrl): ParsedUrl {
-    url = this.ForceLowercaseHostname(url);
-    url = this.ForceProtocol(url);
-    url = this.StripAuthentication(url);
-    url = this.StripAnchor(url);
-    url = this.StripPort(url);
-    url = this.StripSubdomains(url);
-    url = this.StripTrailingSlash(url);
-    url = this.StripQueryParams(url);
-    url = this.SortQueryParams(url);
+    url = Mutators.ForceLowercaseHostname(url);
+    url = Mutators.ForceProtocol(url);
+    url = Mutators.StripAuthentication(url);
+    url = Mutators.StripAnchor(url);
+    url = Mutators.StripPort(url);
+    url = Mutators.StripSubdomains(url);
+    url = Mutators.StripTrailingSlash(url);
+    url = Mutators.StripQueryParams(url);
+    url = Mutators.SortQueryParams(url);
     return url;
   },
 
