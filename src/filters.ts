@@ -13,6 +13,9 @@ const Filters = {
   IsAuthenticated: function (url: ParsedUrl): boolean {
     return (url.username + url.password).length > 0;
   },
+  HasPublicSuffix: function (url: ParsedUrl): boolean {
+    return url.publicSuffix.length > 0;
+  },
   MatchesPattern: function (
     url: ParsedUrl,
     options: Partial<MatchesPatternOptions> = {}
