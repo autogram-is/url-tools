@@ -4,39 +4,47 @@ import * as _ from 'lodash';
 import {ParsedUrl} from './parsed-url';
 import {UrlMutator, Mutators} from './mutations';
 
-export class UrlSet extends Array<ParsedUrl> {
-  constructor(items?: ParsedUrl[]) {
+export class ParsedUrlSet extends Set<string> {
+  static DefaultNormalizer:UrlMutator = Mutators.DefaultNormalizer
+
+  public constructor(public normalizer:UrlMutator = ParsedUrlSet.DefaultNormalizer) {
     super();
-    items && this.addItems(items);
   }
 
-  private addItems(items: ParsedUrl[]) {
-    items.forEach(item => this.push(item));
+  override add(value: string|ParsedUrl, errorOnParseFailure:boolean = false): this {
+    const parsed = this.parseAndNormalize(value);
+    if (parsed) super.add(parsed.href);
+    return this;
   }
 
-  public parseAndPush(url: string, baseUrl?: string | URL): boolean {
+  override has(value: string|ParsedUrl, strict:boolean = false): boolean {
+    const parsed = this.parseAndNormalize(value);
+    if (parsed) return super.has(parsed.href);
+    else return false;
+  }
+
+  override delete(value: string|ParsedUrl, strict:boolean = false): boolean {
+    const parsed = this.parseAndNormalize(value);
+    if (parsed) return super.delete(parsed.href);
+    else return false;
+  }
+
+  addItems(values: Array<string|ParsedUrl>, errorOnParseFailure:boolean = false): this {
+    values.forEach((v) => { this.add(v, errorOnParseFailure) })
+    return this;
+  }
+
+  private parseAndNormalize(value: string|ParsedUrl, errorOnParseFailure:boolean = false): ParsedUrl|void {
     try {
-      const parsed = new ParsedUrl(url, baseUrl);
-      this.push(parsed);
-    } catch {
-      return false;
+      let parsed = (value instanceof ParsedUrl) ? value : new ParsedUrl(value);
+      parsed = this.normalizer(parsed);
+      return parsed;
+    } catch (e:unknown) {
+      if (errorOnParseFailure || e !instanceof TypeError) throw(e);
     }
-    return true;
   }
 
-  normalize(
-    normalizer: UrlMutator = Mutators.DefaultNormalizer,
-    deduplicate = true
-  ): UrlSet {
-    let normalizedUrls = new UrlSet();
-    if (normalizer) {
-      this.forEach(url => {
-        normalizedUrls.push(normalizer(url));
-      });
-    }
-    if (deduplicate) {
-      normalizedUrls = _.uniqBy(normalizedUrls, 'href') as UrlSet;
-    }
-    return normalizedUrls;
+  hydrate(): ParsedUrl[] {
+    return [...this].map(u => new ParsedUrl(u)) as ParsedUrl[];
   }
 }
