@@ -1,8 +1,7 @@
-import {URL} from 'node:url';
+import {URL, URLSearchParams} from 'node:url';
 import * as tld from 'tldjs';
-export class ParsedUrl extends URL {
-  normalized = false;
 
+export class ParsedUrl extends URL {
   get domain(): string {
     return tld.getDomain(this.hostname) ?? '';
   }
@@ -27,8 +26,8 @@ export class ParsedUrl extends URL {
     else return this.pathname.split('/');
   }
 
-  override toJSON(): string {
-    const properties = {
+  get properties(): Record<string, string | string[] | URLSearchParams> {
+    return {
       hash: super.hash,
       host: super.host,
       hostname: super.hostname,
@@ -46,6 +45,9 @@ export class ParsedUrl extends URL {
       searchParams: super.searchParams,
       username: super.username,
     };
-    return JSON.parse(JSON.stringify(properties));
+  }
+
+  override toJSON(): string {
+    return JSON.parse(JSON.stringify(this.properties));
   }
 }
