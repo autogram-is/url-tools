@@ -1,7 +1,7 @@
 export {ParsedUrl} from './parsed-url';
 export {UrlMutator} from './mutations';
 export {UrlFilter} from './filters';
-export {ParsedUrlSet} from './url-set';
+export {ParsedUrlSet} from './parsed-url-set';
 
 export type StringMatch = string | string[] | RegExp;
 export const RegExpFromStringMatch = function (
