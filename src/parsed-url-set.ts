@@ -1,9 +1,10 @@
 import {ParsedUrl} from './parsed-url';
 import {UrlMutator, Mutators} from './mutations';
+import {UrlFilter} from './filters';
 
 export class ParsedUrlSet extends Set<string> {
   static DefaultNormalizer: UrlMutator = Mutators.DefaultNormalizer;
-  readonly rejected: Set<string> = new Set<string>();
+  readonly unparseable: Set<string> = new Set<string>();
 
   public constructor(
     values: Array<string | ParsedUrl> = [],
@@ -18,7 +19,7 @@ export class ParsedUrlSet extends Set<string> {
     if (parsed) {
       super.add(parsed.href);
     } else {
-      this.rejected.add(value as string);
+      this.unparseable.add(value as string);
     }
     return this;
   }
@@ -36,7 +37,7 @@ export class ParsedUrlSet extends Set<string> {
   }
 
   override clear(): void {
-    this.rejected.clear();
+    this.unparseable.clear();
     super.clear();
   }
 
@@ -61,6 +62,12 @@ export class ParsedUrlSet extends Set<string> {
     } catch (e: unknown) {
       if (strict || e! instanceof TypeError) throw e;
     }
+  }
+
+  filter(filterFunction: UrlFilter): ParsedUrlSet {
+    let urls: ParsedUrl[] = [...this.hydrate()];
+    urls = urls.filter(u => filterFunction(u));
+    return new ParsedUrlSet(urls);
   }
 
   hydrate(): ParsedUrl[] {
