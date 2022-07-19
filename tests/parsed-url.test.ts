@@ -1,5 +1,5 @@
 import {ParsedUrl} from '../src';
-import * as fixtures from '../src/test-urls';
+import * as fixtures from './setup';
 
 test('serialization lifecycle works', () => {
   const url = new ParsedUrl(fixtures.URL_WITH_ALL_FEATURES);

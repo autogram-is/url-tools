@@ -1,6 +1,6 @@
 import {ParsedUrl} from '../src';
 import {Mutators} from '../src/mutations';
-import * as fixtures from '../src/test-urls';
+import * as fixtures from './setup';
 
 test('default normalizer works', () => {
   const referenceUrl = new ParsedUrl(fixtures.NORMALIZED_URL.normalized);

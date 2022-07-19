@@ -1,5 +1,5 @@
 import {ParsedUrlSet} from '../src';
-import * as fixtures from '../src/test-urls';
+import * as fixtures from './setup';
 
 test('parsed url set normalizes duplicates', () => {
   const set = new ParsedUrlSet(fixtures.NORMALIZED_URL.variations);
