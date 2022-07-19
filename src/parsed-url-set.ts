@@ -64,8 +64,8 @@ export class ParsedUrlSet extends Set<string> {
     }
   }
 
-  filter(filterFunction:UrlFilter): ParsedUrlSet {
-    let urls:ParsedUrl[] = [...this.hydrate()];
+  filter(filterFunction: UrlFilter): ParsedUrlSet {
+    let urls: ParsedUrl[] = [...this.hydrate()];
     urls = urls.filter(u => filterFunction(u));
     return new ParsedUrlSet(urls);
   }
