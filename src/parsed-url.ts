@@ -1,7 +1,10 @@
 import {URL, URLSearchParams} from 'node:url';
 import * as tld from 'tldjs';
+const mimer = require('mimer');
 
 export class ParsedUrl extends URL {
+  private _mime?: string;
+
   get domain(): string {
     return tld.getDomain(this.hostname) ?? '';
   }
@@ -21,6 +24,16 @@ export class ParsedUrl extends URL {
     return tld.getPublicSuffix(this.hostname) ?? '';
   }
 
+  get extension(): string {
+    return this.pathname.lastIndexOf('.') > -1
+      ? <string>this.pathname.split('.').pop()
+      : '';
+  }
+
+  get mime(): string {
+    return this.extension.length > 0 ? mimer(this.extension) : '';
+  }
+
   get path(): string[] {
     if (this.pathname === '/') return [];
     else return this.pathname.split('/');
@@ -35,6 +48,7 @@ export class ParsedUrl extends URL {
       subdomain: this.subdomain,
       publicSuffix: this.publicSuffix,
       href: super.href,
+      mime: this.mime,
       origin: super.origin,
       password: super.password,
       pathname: super.pathname,

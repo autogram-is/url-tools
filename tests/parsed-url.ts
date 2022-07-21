@@ -17,3 +17,11 @@ test('subdomain stripping works', () => {
   url.subdomain = '';
   expect(url.href).toBe('https://domain.com/');
 });
+
+test('extension-to-mimetype hinting works', () => {
+  const htmlUrl = new ParsedUrl('https://example.com/random-page.html');
+  expect(htmlUrl.mime).toBe('text/html');
+
+  const unknownUrl = new ParsedUrl('https://example.com/news');
+  expect(unknownUrl.mime).toBe('');
+});

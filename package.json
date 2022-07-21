@@ -37,6 +37,7 @@
     "typescript": "^4.7"
   },
   "dependencies": {
+    "mimer": "^2.0.2",
     "tldjs": "^2.3.1"
   }
 }
