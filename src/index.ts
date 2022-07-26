@@ -1,4 +1,5 @@
 export {ParsedUrl} from './parsed-url';
+export {NormalizedUrl} from './normalized-url';
 export {UrlMutator, Mutators} from './mutations';
 export {UrlFilter, Filters} from './filters';
 export {ParsedUrlSet} from './parsed-url-set';
