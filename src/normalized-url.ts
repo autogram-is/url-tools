@@ -17,4 +17,14 @@ export class NormalizedUrl extends ParsedUrl {
     this.parsed = this.href;
     normalizer(this);
   }
+
+  get properties(): Record<string, string | string[] | URLSearchParams> {
+    return {
+      ...super.properties,
+      ...{
+        raw: this.raw,
+        parsed: this.parsed,
+      }
+    }
+  }
 }
