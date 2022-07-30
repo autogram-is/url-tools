@@ -16,17 +16,17 @@ type StripQueryParamOptions = {
   strippedQueryParams: StringMatch;
 };
 
-const Mutators = {
+const UrlMutators = {
   DefaultNormalizer: function (url: ParsedUrl): ParsedUrl {
-    url = Mutators.ForceLowercaseHostname(url);
-    url = Mutators.ForceProtocol(url);
-    url = Mutators.StripAuthentication(url);
-    url = Mutators.StripAnchor(url);
-    url = Mutators.StripPort(url);
-    url = Mutators.StripSubdomains(url);
-    url = Mutators.StripTrailingSlash(url);
-    url = Mutators.StripQueryParams(url);
-    url = Mutators.SortQueryParams(url);
+    url = UrlMutators.ForceLowercaseHostname(url);
+    url = UrlMutators.ForceProtocol(url);
+    url = UrlMutators.StripAuthentication(url);
+    url = UrlMutators.StripAnchor(url);
+    url = UrlMutators.StripPort(url);
+    url = UrlMutators.StripSubdomains(url);
+    url = UrlMutators.StripTrailingSlash(url);
+    url = UrlMutators.StripQueryParams(url);
+    url = UrlMutators.SortQueryParams(url);
     return url;
   },
 
@@ -96,4 +96,4 @@ const Mutators = {
   },
 };
 
-export {UrlMutator, Mutators};
+export {UrlMutator, UrlMutators};

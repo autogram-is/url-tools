@@ -1,6 +1,6 @@
 export {ParsedUrl} from './parsed-url';
-export {UrlMutator, Mutators} from './mutations';
-export {UrlFilter, Filters} from './filters';
+export {UrlMutator, UrlMutators} from './mutations';
+export {UrlFilter, UrlFilters} from './filters';
 export {ParsedUrlSet} from './parsed-url-set';
 
 export type StringMatch = string | string[] | RegExp;

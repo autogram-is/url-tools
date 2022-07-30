@@ -1,9 +1,9 @@
 import {ParsedUrl} from './parsed-url';
-import {UrlMutator, Mutators} from './mutations';
+import {UrlMutator, UrlMutators} from './mutations';
 import {UrlFilter} from './filters';
 
 export class ParsedUrlSet extends Set<string> {
-  static DefaultNormalizer: UrlMutator = Mutators.DefaultNormalizer;
+  static DefaultNormalizer: UrlMutator = UrlMutators.DefaultNormalizer;
   readonly unparseable: Set<string> = new Set<string>();
 
   public constructor(
