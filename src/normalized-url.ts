@@ -1,9 +1,9 @@
-import {URL} from 'node:url';
+import {URL, URLSearchParams} from 'node:url';
 import {ParsedUrl} from './parsed-url';
-import {Mutators, UrlMutator} from './mutations';
+import {UrlMutators, UrlMutator} from './mutations';
 
 export class NormalizedUrl extends ParsedUrl {
-  static normalizer: UrlMutator = Mutators.DefaultNormalizer;
+  static normalizer: UrlMutator = UrlMutators.DefaultNormalizer;
   raw: string;
   parsed: string;
 
@@ -24,7 +24,7 @@ export class NormalizedUrl extends ParsedUrl {
       ...{
         raw: this.raw,
         parsed: this.parsed,
-      }
-    }
+      },
+    };
   }
 }
