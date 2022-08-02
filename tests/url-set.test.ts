@@ -7,12 +7,10 @@ test('url ignores invalid URLs', () => {
 });
 
 test('url set tracks unparsable rejections', () => {
-  const set = new UrlSet<NormalizedUrl>(
-    NormalizedUrl,
-    [fixtures.NORMALIZED_URL.normalized, ...fixtures.UNPARSABLE_URLS],
-  );
-
-  console.log(set.unparsable);
+  const set = new UrlSet<NormalizedUrl>(NormalizedUrl, [
+    fixtures.NORMALIZED_URL.normalized,
+    ...fixtures.UNPARSABLE_URLS,
+  ]);
 
   expect(set.unparsable.size).toBe(fixtures.UNPARSABLE_URLS.length);
   expect(set.size).toBe(1);
@@ -25,4 +23,3 @@ test('url set culls duplicates', () => {
   );
   expect(set.size).toBe(1);
 });
-

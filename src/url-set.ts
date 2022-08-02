@@ -51,9 +51,9 @@ export class UrlSet<T extends URL> extends Set<string> {
     super.clear();
   }
 
-  addItems(values: Array<string | T>, errorOnParseFailure = false): this {
+  addItems(values: Array<string | T>, strict = false): this {
     values.forEach(v => {
-      this.add(v, errorOnParseFailure);
+      this.add(v, strict);
     });
     return this;
   }
