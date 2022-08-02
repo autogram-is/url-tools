@@ -1,59 +1,53 @@
-import {URL} from 'url';
+import {URL} from 'node:url';
 
 export class UrlSet<T extends URL> extends Set<string> {
-  readonly unparsable: Set<string> = new Set<string>();
-  readonly duplicates: string[] = [];
+  unparsable: Set<string> = new Set<string>();
+  duplicates: Set<string> = new Set<string>();
 
   public constructor(
     private typeConstructor: Constructor<T>,
-    values: Array<string | T> = []
+    values: string[],
+    public strict: boolean = false
   ) {
     super();
     this.addItems(values);
   }
 
-  override add(value: string | T, strict = false): this {
-    if (typeof value === 'string') {
-      const u = this.parseAndInstantiate(value, strict);
-      if (u) {
-        if (super.has(u.href)) {
-          this.duplicates.push(value);
-        } else {
-          super.add(u.href);
-        }
+  override add(value: string): this {
+    const u = this.parse(value);
+    if (u) {
+      if (super.has(u.href)) {
+        this.duplicates.add(value);
       } else {
-        this.unparsable.add(value);
+        super.add(u.href);
       }
     } else {
-      if (super.has(value.href)) {
-        this.duplicates.push(value.href);
-      } else {
-        super.add(value.href);
-      }
+      this.unparsable.add(value);
     }
     return this;
   }
 
-  override has(value: string | T, strict = false): boolean {
-    const parsed = this.parseAndInstantiate(value, strict);
+  override has(value: string): boolean {
+    const parsed = this.parse(value);
     if (parsed) return super.has(parsed.href);
     else return false;
   }
 
-  override delete(value: string | T, strict = false): boolean {
-    const parsed = this.parseAndInstantiate(value, strict);
+  override delete(value: string): boolean {
+    const parsed = this.parse(value);
     if (parsed) return super.delete(parsed.href);
     else return false;
   }
 
   override clear(): void {
     this.unparsable.clear();
+    this.duplicates.clear();
     super.clear();
   }
 
-  addItems(values: Array<string | T>, strict = false): this {
+  addItems(values: Array<string>): this {
     values.forEach(v => {
-      this.add(v, strict);
+      this.add(v);
     });
     return this;
   }
@@ -62,15 +56,11 @@ export class UrlSet<T extends URL> extends Set<string> {
     return [...this].map(u => new this.typeConstructor(u)) as T[];
   }
 
-  parseAndInstantiate(value: string | T, strict = false): T | false {
+  parse(value: string): T | false {
     try {
-      if (typeof value === 'string') {
-        return new this.typeConstructor(value);
-      } else {
-        return value;
-      }
+      return new this.typeConstructor(value);
     } catch (e: unknown) {
-      if (strict || e! instanceof TypeError) {
+      if (this.strict) {
         throw e;
       } else {
         return false;
