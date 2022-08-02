@@ -1,7 +1,7 @@
 export {UrlMutator, UrlMutators} from './mutations';
 export {UrlFilter, UrlFilters} from './filters';
 export {ParsedUrl} from './parsed-url';
-export {UrlSet} from './url-set';
+export {UrlSet, ParsedUrlSet, NormalizedUrlSet} from './url-set';
 export {NormalizedUrl} from './normalized-url';
 
 export type StringMatch = string | string[] | RegExp;
