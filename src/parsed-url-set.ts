@@ -4,7 +4,7 @@ import {UrlFilter} from './filters';
 
 export class ParsedUrlSet extends Set<string> {
   static DefaultNormalizer: UrlMutator = UrlMutators.DefaultNormalizer;
-  readonly unparseable: Set<string> = new Set<string>();
+  readonly unparsable: Set<string> = new Set<string>();
 
   public constructor(
     values: Array<string | ParsedUrl> = [],
@@ -19,7 +19,7 @@ export class ParsedUrlSet extends Set<string> {
     if (parsed) {
       super.add(parsed.href);
     } else {
-      this.unparseable.add(value as string);
+      this.unparsable.add(value as string);
     }
     return this;
   }
@@ -37,7 +37,7 @@ export class ParsedUrlSet extends Set<string> {
   }
 
   override clear(): void {
-    this.unparseable.clear();
+    this.unparsable.clear();
     super.clear();
   }
 
