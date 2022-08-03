@@ -5,7 +5,7 @@ type UrlFilter = (url: ParsedUrl, options?: Record<string, unknown>) => boolean;
 
 type MatchesPatternOptions = {pattern: StringMatch; property: string};
 
-const Filters = {
+const UrlFilters = {
   IsWebProtocol: function (url: ParsedUrl): boolean {
     const webProtocols = ['http:', 'https:'];
     return webProtocols.includes(url.protocol);
@@ -35,4 +35,4 @@ const Filters = {
   },
 };
 
-export {UrlFilter, Filters};
+export {UrlFilter, UrlFilters};

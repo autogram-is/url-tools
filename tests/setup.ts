@@ -54,4 +54,4 @@ export const NORMALIZED_URL = {
   ],
 };
 
-export const UNPARSEABLE_URLS = ['extremely not a URL', 'localhost', 'http://'];
+export const UNPARSABLE_URLS = ['extremely not a URL', 'localhost', 'http://'];
