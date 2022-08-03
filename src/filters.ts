@@ -7,7 +7,7 @@ type MatchesPatternOptions = {pattern: StringMatch; property: string};
 
 const Filters = {
   IsWebProtocol: function (url: ParsedUrl): boolean {
-    const webProtocols = ['http', 'https'];
+    const webProtocols = ['http:', 'https:'];
     return webProtocols.includes(url.protocol);
   },
   IsAuthenticated: function (url: ParsedUrl): boolean {
