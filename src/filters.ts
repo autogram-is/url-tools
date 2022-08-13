@@ -33,6 +33,20 @@ const UrlFilters = {
       return false;
     }
   },
+  IsSocialShareLink: (url: ParsedUrl):boolean => {
+    return (
+      (url.domain === 'twitter.com' &&
+        url.pathname.startsWith('/intent/tweet')) || // Share links
+      (url.domain === 'pinterest.com' &&
+        url.pathname.startsWith('/pin/create/button')) ||
+      (url.domain === 'linkedin.com' &&
+        url.pathname.startsWith('/shareArticle')) ||
+      (url.domain === 'reddit.com' && url.pathname.startsWith('/submit')) ||
+      (url.domain === 'tumblr.com' &&
+        url.pathname.startsWith('/widgets/share')) ||
+      (url.domain === 'facebook.com' && url.pathname.startsWith('/sharer/sharer.php'))
+    );
+  }
 };
 
 export {UrlFilter, UrlFilters};
