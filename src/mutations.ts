@@ -22,6 +22,7 @@ const UrlMutators = {
     url = UrlMutators.ForceProtocol(url);
     url = UrlMutators.StripAuthentication(url);
     url = UrlMutators.StripAnchor(url);
+    url = UrlMutators.StripIndexPages(url);
     url = UrlMutators.StripPort(url);
     url = UrlMutators.StripSubdomains(url);
     url = UrlMutators.StripTrailingSlash(url);
@@ -41,7 +42,20 @@ const UrlMutators = {
     url.protocol = options.protocol;
     return url;
   },
-
+  StripIndexPages: function (url: ParsedUrl, indexes?: string[]): ParsedUrl {
+    indexes = indexes ?? [
+      'index.htm',
+      'index.html',
+      'default.aspx',
+      'index.php',
+    ];
+    indexes.forEach(i => {
+      if (url.pathname.endsWith(i)) {
+        url.pathname = url.pathname.replace(i, '');
+      }
+    });
+    return url;
+  },
   StripAnchor: function (url: ParsedUrl): ParsedUrl {
     url.hash = '';
     return url;
