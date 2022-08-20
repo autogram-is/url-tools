@@ -1,16 +1,17 @@
+import { stringify } from 'node:querystring';
 import {URL, URLSearchParams} from 'node:url';
-import * as tld from 'tldjs';
+import { getDomain, getPublicSuffix, getSubdomain } from 'tldts';
 
 export class ParsedUrl extends URL {
   get domain(): string {
-    return tld.getDomain(this.hostname) ?? '';
+    return getDomain(this.hostname) ?? '';
   }
   set domain(value: string) {
     this.hostname = [this.subdomain, value].join('.');
   }
 
   get subdomain(): string {
-    return tld.getSubdomain(this.hostname) ?? '';
+    return getSubdomain(this.hostname) ?? '';
   }
   set subdomain(value: string) {
     if (value.length > 0) this.hostname = [value, this.domain].join('.');
@@ -18,7 +19,7 @@ export class ParsedUrl extends URL {
   }
 
   get publicSuffix(): string {
-    return tld.getPublicSuffix(this.hostname) ?? '';
+    return getPublicSuffix(this.hostname) ?? '';
   }
 
   get path(): string[] {
@@ -26,7 +27,12 @@ export class ParsedUrl extends URL {
     else return this.pathname.split('/');
   }
 
-  get properties(): Record<string, string | string[] | URLSearchParams> {
+  get properties(): Record<string, string | string[] | Record<string, string | string[]>> {
+    const searchParams: Record<string, string | string[]> = {}
+    for (const [key, value] of super.searchParams) {
+      searchParams[key] = value;
+    }
+  
     return {
       hash: super.hash,
       host: super.host,
@@ -42,12 +48,12 @@ export class ParsedUrl extends URL {
       port: super.port,
       protocol: super.protocol,
       search: super.search,
-      searchParams: super.searchParams,
+      searchParams: searchParams,
       username: super.username,
     };
   }
 
-  override toJSON(): string {
-    return JSON.parse(JSON.stringify(this.properties));
+  serialize(): string {
+    return JSON.stringify(this.properties);
   }
 }

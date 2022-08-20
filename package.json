@@ -1,26 +1,65 @@
 {
   "name": "@autogram/url-tools",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Helper classes for validating, filtering, and normalizing URLs in bulk",
-  "main": "build/src/index.js",
+  "exports": "./dist/source/index.js",
+  "types": "./dist/source/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
-    "test": "jest --config jestconfig.json",
-    "lint": "gts lint",
-    "clean": "gts clean",
+    "clean": "shx rm -rf ./dist; ava reset-cache",
+    "nuke": "npm run clean; rm -rf ./node_modules; rm package-lock.json; npm install",
+    "test": "ava",
+    "lint": "xo",
+    "fix": "xo --fix",
     "compile": "tsc",
-    "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
+    "prepare": "run-s clean compile",
+    "pretest": "run-s clean compile",
     "posttest": "npm run lint"
   },
   "files": [
-    "build/**/*"
+    "dist/source/**/*",
+    "dist/docs/**/*"
   ],
+  "xo": {
+    "space": true,
+    "prettier": true,
+    "bracketSpacing": true,
+    "rules": {
+      "new-cap": "off",
+      "max-params": "off"
+    }
+  },
+  "prettier": {
+    "editorconfig": true,
+    "semi": true,
+    "singleQuote": true,
+    "indent_style": "space",
+    "indent_size": 2,
+    "bracketSpacing": true
+  },
+  "ava": {
+    "files": [
+      "tests/*"
+    ],
+    "typescript": {
+      "rewritePaths": {
+        "tests/": "dist/tests/"
+      },
+      "compile": false
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/autogram-is/url-tools.git"
   },
-  "keywords": ["url", "scraping", "webcrawling"],
+  "keywords": [
+    "url",
+    "scraping",
+    "webcrawling"
+  ],
   "author": "Jeff Eaton <jeff@autogram.is> (http://eaton.fyi/)",
   "license": "MIT",
   "bugs": {
@@ -28,15 +67,19 @@
   },
   "homepage": "https://github.com/autogram-is/url-tools#readme",
   "devDependencies": {
-    "@types/jest": "^28.1.4",
+    "@ava/typescript": "^3.0.1",
     "@types/node": "^14.11.2",
-    "@types/tldjs": "^2.3.1",
-    "gts": "^4.0.0",
-    "jest": "^28.1.2",
-    "ts-jest": "^28.0.5",
-    "typescript": "^4.7"
+    "ava": "^4.3.1",
+    "concurrently": "^7.3.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "shx": "^0.3.4",
+    "typescript": "^4.7.4",
+    "xo": "^0.51.0"
   },
   "dependencies": {
-    "tldjs": "^2.3.1"
+    "@sindresorhus/is": "^5.3.0",
+    "ow": "^1.0.0",
+    "tldts": "^5.7.89"
   }
 }

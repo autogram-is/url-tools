@@ -1,21 +1,22 @@
-import {NormalizedUrl} from '../src';
+import anyTest, { TestFn } from 'ava';
+import {NormalizedUrl} from '../source/index.js';
 
-import * as fixtures from './setup';
+const test = anyTest as TestFn<Record<string, string[]>>
 
-test('normalizer is applied correctly', () => {
+test('normalizer is applied correctly', (t) => {
   // 'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor';
 
-  const url = new NormalizedUrl(fixtures.URL_WITH_ALL_FEATURES);
+  const url = new NormalizedUrl(t.context.URL_WITH_ALL_FEATURES[0]);
 
-  expect(url.raw).toEqual(fixtures.URL_WITH_ALL_FEATURES);
-  expect(url.href).toEqual(
+  t.is(
+    url.href,
     'https://subdomain.subdomain.domain.com/directory/filename.html?firstParam=1&secondParam=2'
   );
 
   const url2 = new NormalizedUrl(
-    fixtures.URL_WITH_ALL_FEATURES,
+    t.context.URL_WITH_ALL_FEATURES[0],
     undefined,
     u => u
   );
-  expect(url2.href).toEqual(fixtures.URL_WITH_ALL_FEATURES);
+  t.is(url2.href, t.context.URL_WITH_ALL_FEATURES[0]);
 });

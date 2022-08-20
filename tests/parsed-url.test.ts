@@ -1,19 +1,24 @@
-import {ParsedUrl} from '../src';
-import * as fixtures from './setup';
+import anyTest, { TestFn } from 'ava';
+import {ParsedUrl} from '../source/index.js';
 
-test('serialization lifecycle works', () => {
-  const url = new ParsedUrl(fixtures.URL_WITH_ALL_FEATURES);
-  expect((JSON.parse(JSON.stringify(url)) as ParsedUrl).href).toBe(url.href);
+const test = anyTest as TestFn<Record<string, string[]>>
+
+test('serialization lifecycle', (t) => {
+  const url = new ParsedUrl(t.context.URL_WITH_ALL_FEATURES[0]);
+  t.is(
+    (JSON.parse(JSON.stringify(url)) as ParsedUrl).href,
+    url.href
+  );
 });
 
-test('subdomain alteration works', () => {
+test('subdomain alteration', (t) => {
   const url = new ParsedUrl('https://subdomain.www.domain.com');
   url.subdomain = 'test';
-  expect(url.href).toBe('https://test.domain.com/');
+  t.is(url.href, 'https://test.domain.com/');
 });
 
-test('subdomain stripping works', () => {
+test('subdomain stripping', (t) => {
   const url = new ParsedUrl('https://subdomain.www.domain.com/');
   url.subdomain = '';
-  expect(url.href).toBe('https://domain.com/');
+  t.is(url.href, 'https://domain.com/');
 });

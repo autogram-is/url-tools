@@ -37,9 +37,6 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
-# Transpiled js files
-/build
-
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -106,3 +103,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# MacOS cruft
+.DS_store

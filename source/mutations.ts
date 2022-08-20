@@ -1,5 +1,5 @@
-import {ParsedUrl} from './parsed-url';
-import {StringMatch, RegExpFromStringMatch} from './index';
+import {ParsedUrl} from './parsed-url.js';
+import {StringMatch, RegExpFromStringMatch} from './index.js';
 
 type UrlMutator = (
   url: ParsedUrl,

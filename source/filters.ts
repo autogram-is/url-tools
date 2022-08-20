@@ -1,5 +1,5 @@
-import {ParsedUrl} from './parsed-url';
-import {RegExpFromStringMatch, StringMatch} from './index';
+import {ParsedUrl} from './parsed-url.js';
+import {RegExpFromStringMatch, StringMatch} from './index.js';
 
 type UrlFilter = (url: ParsedUrl, options?: Record<string, unknown>) => boolean;
 

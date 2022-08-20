@@ -1,8 +1,8 @@
-export {UrlMutator, UrlMutators} from './mutations';
-export {UrlFilter, UrlFilters} from './filters';
-export {ParsedUrl} from './parsed-url';
-export {UrlSet, ParsedUrlSet, NormalizedUrlSet} from './url-set';
-export {NormalizedUrl} from './normalized-url';
+export {UrlMutator, UrlMutators} from './mutations.js';
+export {UrlFilter, UrlFilters} from './filters.js';
+export {ParsedUrl} from './parsed-url.js';
+export {UrlSet, ParsedUrlSet, NormalizedUrlSet} from './url-set.js';
+export {NormalizedUrl} from './normalized-url.js';
 
 export type StringMatch = string | string[] | RegExp;
 export const RegExpFromStringMatch = function (
