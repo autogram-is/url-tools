@@ -106,3 +106,4 @@ dist
 
 # MacOS cruft
 .DS_store
+package-lock.json
