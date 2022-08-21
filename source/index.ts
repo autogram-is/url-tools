@@ -1,13 +1,12 @@
-export { UrlMutator, UrlMutators } from './mutations.js';
-export { UrlFilter, UrlFilters } from './filters.js';
-export { ParsedUrl } from './parsed-url.js';
+export * as UrlMutators from './mutators.js';
+export * as UrlFilters from './filters.js';
+
+export { ParsedUrl, UrlFilter, UrlMutator } from './parsed-url.js';
 export { UrlSet, ParsedUrlSet, NormalizedUrlSet } from './url-set.js';
 export { NormalizedUrl } from './normalized-url.js';
 
 export type StringMatch = string | string[] | RegExp;
-export const regExpFromStringMatch = function (
-  pattern: StringMatch
-): RegExp {
+export const regExpFromStringMatch = function (pattern: StringMatch): RegExp {
   if (typeof pattern === 'string') {
     return new RegExp(pattern);
   }

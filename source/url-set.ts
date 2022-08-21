@@ -1,26 +1,45 @@
 import { URL } from 'node:url';
-import { UrlMutator } from './mutations.js';
 import { NormalizedUrl } from './normalized-url.js';
-import { ParsedUrl } from './parsed-url.js';
+import { ParsedUrl, UrlFilter } from './parsed-url.js';
+import { UrlMutator } from './index.js';
 
-abstract class UrlTypeSet<T extends URL> extends Set<T> {
+type UrlSetOptions = {
+  [key: string]: unknown;
+  strict: boolean;
+  base?: string | URL;
+  filter: (url: URL) => boolean;
+};
+
+export class UrlSet<T extends URL = URL> extends Set<T> {
   verifier = new Set<string>();
   unparsable = new Set<string>();
+  rejected = new Set<string>();
+  options: UrlSetOptions;
 
   public constructor(
     values?: T[] | string[],
-    readonly defaultBase?: string | URL,
-    readonly strict: boolean = false,
+    options: Partial<UrlSetOptions> = {},
   ) {
     super();
+    this.options = {
+      strict: false,
+      base: undefined,
+      filter: () => true,
+      ...options,
+    };
     if (values !== undefined) this.addItems(values);
   }
 
   override add(value: T | string): this {
     const incoming = typeof value === 'string' ? this.parse(value) : value;
     if (incoming) {
-      if (!this.has(incoming)) {
-        super.add(incoming);
+      if (!this.options.filter(incoming)) {
+        this.rejected.add(incoming.href);
+        return this;
+      }
+
+      if (!this.verifier.has(incoming.href)) {
+        super.add(incoming as T);
         this.verifier.add(incoming.href);
       }
     } else {
@@ -31,13 +50,15 @@ abstract class UrlTypeSet<T extends URL> extends Set<T> {
   }
 
   override has(value: T | string): boolean {
-    const incoming = typeof value === 'string' ? this.parse(value) : value;
+    const incoming =
+      typeof value === 'string' ? (this.parse(value) as T) : value;
     if (!incoming) return false;
     return this.verifier.has(incoming.href);
   }
 
   override delete(value: T | string): boolean {
-    const incoming = typeof value === 'string' ? this.parse(value) : value;
+    const incoming =
+      typeof value === 'string' ? (this.parse(value) as T) : value;
     if (incoming && this.verifier.delete(incoming.href)) {
       for (const v of this) {
         if (v.href === incoming.href) super.delete(v);
@@ -63,26 +84,22 @@ abstract class UrlTypeSet<T extends URL> extends Set<T> {
     return this;
   }
 
-  protected abstract parse(input: string, base?: string | URL): T | false;
-}
-
-export class UrlSet extends UrlTypeSet<URL> {
-  protected override parse(
+  protected parse<T>(
     input: string,
     base?: string | URL,
-    recursing = false,
+    recursing?: boolean,
   ): URL | false {
     try {
       return new URL(input, base);
     } catch (error: unknown) {
-      if (!recursing && base === undefined && this.defaultBase !== undefined) {
+      if (!recursing && this.options.base !== undefined) {
         try {
-          return this.parse(input, this.defaultBase, true);
+          return this.parse(input, this.options.base, true);
         } catch {
           this.unparsable.add(input);
           return false;
         }
-      } else if (error! instanceof TypeError || this.strict) {
+      } else if (!(error instanceof TypeError) || this.options.strict) {
         throw error;
       }
 
@@ -92,40 +109,42 @@ export class UrlSet extends UrlTypeSet<URL> {
   }
 }
 
-export class ParsedUrlSet extends UrlTypeSet<ParsedUrl> {
+type ParsedUrlSetOptions = UrlSetOptions & {
+  filter: UrlFilter;
+};
+export class ParsedUrlSet extends UrlSet<ParsedUrl> {
+  rejected = new Set<string>();
+
+  public constructor(
+    values?: ParsedUrl[] | string[],
+    options: Partial<ParsedUrlSetOptions> = {},
+  ) {
+    super(values, options);
+  }
+
   protected override parse(
     input: string,
     base?: string | URL,
     recursing = false,
   ): ParsedUrl | false {
-    try {
-      return new ParsedUrl(input, base);
-    } catch (error: unknown) {
-      if (!recursing && base === undefined && this.defaultBase !== undefined) {
-        try {
-          return this.parse(input, this.defaultBase, true);
-        } catch {
-          this.unparsable.add(input);
-          return false;
-        }
-      } else if (!(error instanceof TypeError) || this.strict) {
-        throw error;
-      }
-
-      this.unparsable.add(input);
-      return false;
-    }
+    const url = super.parse(input, base, recursing);
+    if (url) return new ParsedUrl(url.href);
+    return false;
   }
 }
 
-export class NormalizedUrlSet extends UrlTypeSet<NormalizedUrl> {
+type NormalizedUrlSetOptions = ParsedUrlSetOptions & {
+  filter: UrlFilter;
+  normalizer: UrlMutator;
+};
+
+export class NormalizedUrlSet extends UrlSet<NormalizedUrl> {
+  options!: NormalizedUrlSetOptions;
   public constructor(
     values?: NormalizedUrl[] | string[],
-    readonly normalizeer: UrlMutator = NormalizedUrl.normalizer,
-    readonly defaultBase?: string | URL,
-    strict = false,
+    options: Partial<NormalizedUrlSetOptions> = {},
   ) {
-    super(values, defaultBase, strict);
+    super(values, options);
     if (values !== undefined) this.addItems(values);
   }
 
@@ -134,22 +153,8 @@ export class NormalizedUrlSet extends UrlTypeSet<NormalizedUrl> {
     base?: string | URL,
     recursing = false,
   ): NormalizedUrl | false {
-    try {
-      return new NormalizedUrl(input, base);
-    } catch (error: unknown) {
-      if (!recursing && base === undefined && this.defaultBase !== undefined) {
-        try {
-          return this.parse(input, this.defaultBase, true);
-        } catch {
-          this.unparsable.add(input);
-          return false;
-        }
-      } else if (!(error instanceof TypeError) || this.strict) {
-        throw error;
-      }
-
-      this.unparsable.add(input);
-      return false;
-    }
+    const url = super.parse(input, base, recursing);
+    if (url) return new NormalizedUrl(url.href);
+    return false;
   }
 }

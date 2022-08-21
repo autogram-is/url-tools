@@ -7,7 +7,7 @@ test('default normalizer works', (t) => {
   const referenceUrl = new ParsedUrl(url);
   for (const u of testUrls.normalizedUrlVariations) {
     t.is(
-      UrlMutators.DefaultNormalizer(new ParsedUrl(u)).href,
+      UrlMutators.defaultNormalizer(new ParsedUrl(u)).href,
       referenceUrl.href,
     );
   }

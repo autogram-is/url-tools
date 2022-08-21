@@ -4,7 +4,7 @@ import { testUrls } from './parsed-url.test.js';
 
 test('normalizer is applied correctly', (t) => {
   // 'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor';
-  NormalizedUrl.normalizer = UrlMutators.StripQueryParams;
+  NormalizedUrl.normalizer = UrlMutators.stripQueryParameters;
   const url = new NormalizedUrl(testUrls.urlWithAllFeatures);
 
   t.is(
