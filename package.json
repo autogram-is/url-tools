@@ -1,6 +1,6 @@
 {
   "name": "@autogram/url-tools",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Helper classes for validating, filtering, and normalizing URLs in bulk",
   "exports": "./dist/source/index.js",
   "types": "./dist/source/index.d.ts",
