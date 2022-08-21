@@ -1,5 +1,5 @@
 import { ParsedUrl } from './parsed-url.js';
-import { StringMatch, RegExpFromStringMatch } from './index.js';
+import { StringMatch, regExpFromStringMatch } from './index.js';
 
 type UrlMutator = (
   url: ParsedUrl,
@@ -79,7 +79,7 @@ const UrlMutators = {
       ...options,
     };
 
-    const stripList = RegExpFromStringMatch(options.strippedQueryParams);
+    const stripList = regExpFromStringMatch(options.strippedQueryParams);
     url.searchParams.forEach((value: string, name: string) => {
       if (stripList.test(name)) {
         url.searchParams.delete(name);
@@ -96,7 +96,7 @@ const UrlMutators = {
       ...options,
     };
 
-    const stripList = RegExpFromStringMatch(options.strippedSubdomains);
+    const stripList = regExpFromStringMatch(options.strippedSubdomains);
     if (stripList.test(url.subdomain)) url.subdomain = '';
     return url;
   },

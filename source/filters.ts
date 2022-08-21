@@ -1,5 +1,5 @@
 import { ParsedUrl } from './parsed-url.js';
-import { RegExpFromStringMatch, StringMatch } from './index.js';
+import { regExpFromStringMatch, StringMatch } from './index.js';
 
 type UrlFilter = (url: ParsedUrl, options?: Record<string, unknown>) => boolean;
 
@@ -27,7 +27,7 @@ const UrlFilters = {
     };
 
     if (options.property && options.property in url) {
-      const match = RegExpFromStringMatch(options.pattern);
+      const match = regExpFromStringMatch(options.pattern);
       return match.test(url.properties[options.property].toString());
     }
 

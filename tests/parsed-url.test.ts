@@ -1,10 +1,10 @@
 import test from 'ava';
 import { ParsedUrl } from '../source/index.js';
 
-export const TEST_URLS = {
-  URL_WITH_ALL_FEATURES:
+export const testUrls = {
+  urlWithAllFeatures:
     'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor',
-  LONG_URLS: [
+  longUrls: [
     'https://search.barebones.com/action.lasso?-database=lists.fp3&-layout=import&-logicalop=and&-maxRecords=10&-noResults=noresults.html&-op=gte&-op=lte&-response=%2Fhitlist.html&-search=MSExplorerHack&-search=Search&contents=&date.sent=&date.sent=&list=web-authoring&originator=correia&subject=w3c+validator+or+bbedit+validator',
     'https://target.com/p/invicta-men-s-stainless-steel-pro-diver-quartz-watch-silver-in-8926ob/-/A-15608416?AFID=google_pla_df&CPNG=PLA_Jewelry%2BShopping&LID=700000001170770pgs&adgroup=SC_Jewelry&device=c&gclid=CPGr6cWFnc8CFQpkhgodpP0AZw&gclsrc=aw.ds&location=9007325&network=g',
     'https://amazon.com/gp/redirect.html?camp=1789&creative=390957&ie=UTF8&linkCode=ur2&location=http%3A%2F%2Fwww.amazon.com%2Fs%3Fie%3DUTF8%26x%3D13%26ref_%3Dnb_sb_noss%26y%3D18%26field-keywords%3Dflip%2520hd%26url%3Dsearch-alias%253Delectronics&tag=daringfirebal-20',
@@ -26,7 +26,7 @@ export const TEST_URLS = {
     'https://validator.w3.org/check?charset=iso-8859-1+%28Western+Europe%29&doctype=HTML+4.01+Transitional&uri=http%3A%2F%2Fwww.businessweek.com%2Ftechnology%2Fcontent%2Fjul2003%2Ftc2003072_0512_tc056.htm',
     'https://daringfireball.net/%22https://www.vice.com/en/article/jgpe3g/texas-police-say-body-camera-footage-from-uvalde-could-be-used-to-find-weakness-by-other-shooters-ask-ag-to-suppress-it/%22',
   ],
-  NON_WEB_URLS: [
+  nonWebUrls: [
     'dict:///insoucient',
     'mailto:sponsors@daringfireball.net',
     'rdar://problem/4255244',
@@ -35,8 +35,8 @@ export const TEST_URLS = {
     'javascript:;',
     'tel:1-800-555-1212',
   ],
-  NORMALIZED_URL: 'https://example.com/path?a=1&b=2',
-  NORMALIZED_URL_VARIATIONS: [
+  normalizedUrl: 'https://example.com/path?a=1&b=2',
+  normalizedUrlVariations: [
     'http://example.com/path?a=1&b=2',
     'https://example.com/path/?a=1&b=2',
     'https://example.com:8080/path?a=1&b=2',
@@ -50,11 +50,11 @@ export const TEST_URLS = {
     'https://user:pass@example.com/path?a=1&b=2',
     'https://example.com/path?a=1&b=2#anchor',
   ],
-  UNPARSABLE_URLS: ['extremely not a URL', '23.50', 'http://'],
+  unparsableUrls: ['extremely not a URL', '23.50', 'http://'],
 };
 
 test('serialization lifecycle', (t) => {
-  const url = new ParsedUrl(TEST_URLS.URL_WITH_ALL_FEATURES);
+  const url = new ParsedUrl(testUrls.urlWithAllFeatures);
   t.is((JSON.parse(url.serialize()) as ParsedUrl).href, url.href);
 });
 
