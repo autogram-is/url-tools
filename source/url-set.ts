@@ -145,7 +145,7 @@ export class NormalizedUrlSet extends UrlTypeSet<NormalizedUrl> {
           return false;
         }
       } else {
-        if (e! instanceof TypeError || this.strict) {
+        if (e !instanceof TypeError || this.strict) {
           throw e;
         }
       }

@@ -74,13 +74,15 @@ const UrlMutators = {
     options: Partial<StripQueryParamOptions> = {}
   ): ParsedUrl {
     options = {
-      strippedQueryParams: /^[utm_\s+|src|referrer]/,
+      strippedQueryParams: /^utm_\s+|src|referrer|referer/,
       ...options,
     };
 
     const stripList = RegExpFromStringMatch(options.strippedQueryParams);
     url.searchParams.forEach((value: string, name: string) => {
-      if (stripList.test(name)) url.searchParams.delete(name);
+      if (stripList.test(name)) {
+        url.searchParams.delete(name);
+      }
     });
     return url;
   },
