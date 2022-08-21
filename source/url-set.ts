@@ -1,7 +1,7 @@
-import {URL} from 'node:url';
-import {UrlMutator} from './mutations.js';
-import {NormalizedUrl} from './normalized-url.js';
-import {ParsedUrl} from './parsed-url.js';
+import { URL } from 'node:url';
+import { UrlMutator } from './mutations.js';
+import { NormalizedUrl } from './normalized-url.js';
+import { ParsedUrl } from './parsed-url.js';
 
 abstract class UrlTypeSet<T extends URL> extends Set<T> {
   verifier = new Set<string>();
@@ -10,7 +10,7 @@ abstract class UrlTypeSet<T extends URL> extends Set<T> {
   public constructor(
     values?: T[] | string[],
     readonly defaultBase?: string | URL,
-    readonly strict: boolean = false
+    readonly strict: boolean = false,
   ) {
     super();
     if (values !== undefined) this.addItems(values);
@@ -26,6 +26,7 @@ abstract class UrlTypeSet<T extends URL> extends Set<T> {
     } else {
       this.unparsable.add(value as string);
     }
+
     return this;
   }
 
@@ -37,14 +38,14 @@ abstract class UrlTypeSet<T extends URL> extends Set<T> {
 
   override delete(value: T | string): boolean {
     const incoming = typeof value === 'string' ? this.parse(value) : value;
-    if (incoming) {
-      if (this.verifier.delete(incoming.href)) {
-        this.forEach(v => {
-          if (v.href === incoming.href) super.delete(v);
-        });
-        return true;
+    if (incoming && this.verifier.delete(incoming.href)) {
+      for (const v of this) {
+        if (v.href === incoming.href) super.delete(v);
       }
+
+      return true;
     }
+
     return false;
   }
 
@@ -55,9 +56,10 @@ abstract class UrlTypeSet<T extends URL> extends Set<T> {
   }
 
   addItems(values: T[] | string[]): this {
-    values.forEach(v => {
+    for (const v of values) {
       this.add(v);
-    });
+    }
+
     return this;
   }
 
@@ -68,11 +70,11 @@ export class UrlSet extends UrlTypeSet<URL> {
   protected override parse(
     input: string,
     base?: string | URL,
-    recursing = false
+    recursing = false,
   ): URL | false {
     try {
       return new URL(input, base);
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       if (!recursing && base === undefined && this.defaultBase !== undefined) {
         try {
           return this.parse(input, this.defaultBase, true);
@@ -80,11 +82,10 @@ export class UrlSet extends UrlTypeSet<URL> {
           this.unparsable.add(input);
           return false;
         }
-      } else {
-        if (e! instanceof TypeError || this.strict) {
-          throw e;
-        }
+      } else if (error! instanceof TypeError || this.strict) {
+        throw error;
       }
+
       this.unparsable.add(input);
       return false;
     }
@@ -95,11 +96,11 @@ export class ParsedUrlSet extends UrlTypeSet<ParsedUrl> {
   protected override parse(
     input: string,
     base?: string | URL,
-    recursing = false
+    recursing = false,
   ): ParsedUrl | false {
     try {
       return new ParsedUrl(input, base);
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       if (!recursing && base === undefined && this.defaultBase !== undefined) {
         try {
           return this.parse(input, this.defaultBase, true);
@@ -107,11 +108,10 @@ export class ParsedUrlSet extends UrlTypeSet<ParsedUrl> {
           this.unparsable.add(input);
           return false;
         }
-      } else {
-        if (e! instanceof TypeError || this.strict) {
-          throw e;
-        }
+      } else if (!(error instanceof TypeError) || this.strict) {
+        throw error;
       }
+
       this.unparsable.add(input);
       return false;
     }
@@ -123,7 +123,7 @@ export class NormalizedUrlSet extends UrlTypeSet<NormalizedUrl> {
     values?: NormalizedUrl[] | string[],
     readonly normalizeer: UrlMutator = NormalizedUrl.normalizer,
     readonly defaultBase?: string | URL,
-    strict = false
+    strict = false,
   ) {
     super(values, defaultBase, strict);
     if (values !== undefined) this.addItems(values);
@@ -132,11 +132,11 @@ export class NormalizedUrlSet extends UrlTypeSet<NormalizedUrl> {
   protected override parse(
     input: string,
     base?: string | URL,
-    recursing = false
+    recursing = false,
   ): NormalizedUrl | false {
     try {
       return new NormalizedUrl(input, base);
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       if (!recursing && base === undefined && this.defaultBase !== undefined) {
         try {
           return this.parse(input, this.defaultBase, true);
@@ -144,11 +144,10 @@ export class NormalizedUrlSet extends UrlTypeSet<NormalizedUrl> {
           this.unparsable.add(input);
           return false;
         }
-      } else {
-        if (e !instanceof TypeError || this.strict) {
-          throw e;
-        }
+      } else if (!(error instanceof TypeError) || this.strict) {
+        throw error;
       }
+
       this.unparsable.add(input);
       return false;
     }

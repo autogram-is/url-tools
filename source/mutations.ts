@@ -1,23 +1,23 @@
-import {ParsedUrl} from './parsed-url.js';
-import {StringMatch, RegExpFromStringMatch} from './index.js';
+import { ParsedUrl } from './parsed-url.js';
+import { StringMatch, RegExpFromStringMatch } from './index.js';
 
 type UrlMutator = (
   url: ParsedUrl,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ) => ParsedUrl;
 
-type ForceProtocolOptions = {protocol: 'https' | 'http'};
+type ForceProtocolOptions = { protocol: 'https' | 'http' };
 type StripSubdomainOptions = {
   protectedSubdomains: StringMatch;
   strippedSubdomains: StringMatch;
 };
-type StripQueryParamOptions = {
+type StripQueryParameterOptions = {
   protectedQueryParams: StringMatch;
   strippedQueryParams: StringMatch;
 };
 
 const UrlMutators = {
-  DefaultNormalizer: function (url: ParsedUrl): ParsedUrl {
+  DefaultNormalizer(url: ParsedUrl): ParsedUrl {
     url = UrlMutators.ForceLowercaseHostname(url);
     url = UrlMutators.ForceProtocol(url);
     url = UrlMutators.StripAuthentication(url);
@@ -31,47 +31,48 @@ const UrlMutators = {
     return url;
   },
 
-  ForceLowercaseHostname: function (url: ParsedUrl): ParsedUrl {
+  ForceLowercaseHostname(url: ParsedUrl): ParsedUrl {
     url.hostname = url.hostname.toLowerCase();
     return url;
   },
-  ForceProtocol: function (
+  ForceProtocol(
     url: ParsedUrl,
-    options: ForceProtocolOptions = {protocol: 'https'}
+    options: ForceProtocolOptions = { protocol: 'https' },
   ): ParsedUrl {
     url.protocol = options.protocol;
     return url;
   },
-  StripIndexPages: function (url: ParsedUrl, indexes?: string[]): ParsedUrl {
+  StripIndexPages(url: ParsedUrl, indexes?: string[]): ParsedUrl {
     indexes = indexes ?? [
       'index.htm',
       'index.html',
       'default.aspx',
       'index.php',
     ];
-    indexes.forEach(i => {
+    for (const i of indexes) {
       if (url.pathname.endsWith(i)) {
         url.pathname = url.pathname.replace(i, '');
       }
-    });
+    }
+
     return url;
   },
-  StripAnchor: function (url: ParsedUrl): ParsedUrl {
+  StripAnchor(url: ParsedUrl): ParsedUrl {
     url.hash = '';
     return url;
   },
-  StripAuthentication: function (url: ParsedUrl): ParsedUrl {
+  StripAuthentication(url: ParsedUrl): ParsedUrl {
     url.username = '';
     url.password = '';
     return url;
   },
-  StripPort: function (url: ParsedUrl): ParsedUrl {
+  StripPort(url: ParsedUrl): ParsedUrl {
     url.port = '';
     return url;
   },
-  StripQueryParams: function (
+  StripQueryParams(
     url: ParsedUrl,
-    options: Partial<StripQueryParamOptions> = {}
+    options: Partial<StripQueryParameterOptions> = {},
   ): ParsedUrl {
     options = {
       strippedQueryParams: /^utm_\s+|src|referrer|referer/,
@@ -86,12 +87,12 @@ const UrlMutators = {
     });
     return url;
   },
-  StripSubdomains: function (
+  StripSubdomains(
     url: ParsedUrl,
-    options: Partial<StripSubdomainOptions> = {}
+    options: Partial<StripSubdomainOptions> = {},
   ): ParsedUrl {
     options = {
-      strippedSubdomains: /^ww[w0-9]+/,
+      strippedSubdomains: /^ww[w\d]+/,
       ...options,
     };
 
@@ -99,17 +100,21 @@ const UrlMutators = {
     if (stripList.test(url.subdomain)) url.subdomain = '';
     return url;
   },
-  StripTrailingSlash: function (url: ParsedUrl): ParsedUrl {
+  StripTrailingSlash(url: ParsedUrl): ParsedUrl {
     if (url.pathname.endsWith('/')) {
-      url.pathname = url.pathname.substring(0, url.pathname.length - 1);
+      url.pathname = url.pathname.slice(
+        0,
+        Math.max(0, url.pathname.length - 1),
+      );
     }
+
     return url;
   },
 
-  SortQueryParams: function (url: ParsedUrl): ParsedUrl {
+  SortQueryParams(url: ParsedUrl): ParsedUrl {
     url.searchParams.sort();
     return url;
   },
 };
 
-export {UrlMutator, UrlMutators};
+export { UrlMutator, UrlMutators };

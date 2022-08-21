@@ -1,11 +1,11 @@
-import { stringify } from 'node:querystring';
-import {URL, URLSearchParams} from 'node:url';
+import { URL } from 'node:url';
 import { getDomain, getPublicSuffix, getSubdomain } from 'tldts';
 
 export class ParsedUrl extends URL {
   get domain(): string {
     return getDomain(this.hostname) ?? '';
   }
+
   set domain(value: string) {
     this.hostname = [this.subdomain, value].join('.');
   }
@@ -13,9 +13,10 @@ export class ParsedUrl extends URL {
   get subdomain(): string {
     return getSubdomain(this.hostname) ?? '';
   }
+
   set subdomain(value: string) {
-    if (value.length > 0) this.hostname = [value, this.domain].join('.');
-    else this.hostname = this.domain;
+    this.hostname =
+      value.length > 0 ? [value, this.domain].join('.') : this.domain;
   }
 
   get publicSuffix(): string {
@@ -24,15 +25,18 @@ export class ParsedUrl extends URL {
 
   get path(): string[] {
     if (this.pathname === '/') return [];
-    else return this.pathname.split('/');
+    return this.pathname.split('/');
   }
 
-  get properties(): Record<string, string | string[] | Record<string, string | string[]>> {
-    const searchParams: Record<string, string | string[]> = {}
+  get properties(): Record<
+    string,
+    string | string[] | Record<string, string | string[]>
+  > {
+    const searchParameters: Record<string, string | string[]> = {};
     for (const [key, value] of super.searchParams) {
-      searchParams[key] = value;
+      searchParameters[key] = value;
     }
-  
+
     return {
       hash: super.hash,
       host: super.host,
@@ -48,7 +52,7 @@ export class ParsedUrl extends URL {
       port: super.port,
       protocol: super.protocol,
       search: super.search,
-      searchParams: searchParams,
+      searchParams: searchParameters,
       username: super.username,
     };
   }

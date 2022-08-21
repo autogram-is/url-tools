@@ -2,7 +2,8 @@ import test from 'ava';
 import { ParsedUrl } from '../source/index.js';
 
 export const TEST_URLS = {
-  URL_WITH_ALL_FEATURES: 'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor',
+  URL_WITH_ALL_FEATURES:
+    'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor',
   LONG_URLS: [
     'https://search.barebones.com/action.lasso?-database=lists.fp3&-layout=import&-logicalop=and&-maxRecords=10&-noResults=noresults.html&-op=gte&-op=lte&-response=%2Fhitlist.html&-search=MSExplorerHack&-search=Search&contents=&date.sent=&date.sent=&list=web-authoring&originator=correia&subject=w3c+validator+or+bbedit+validator',
     'https://target.com/p/invicta-men-s-stainless-steel-pro-diver-quartz-watch-silver-in-8926ob/-/A-15608416?AFID=google_pla_df&CPNG=PLA_Jewelry%2BShopping&LID=700000001170770pgs&adgroup=SC_Jewelry&device=c&gclid=CPGr6cWFnc8CFQpkhgodpP0AZw&gclsrc=aw.ds&location=9007325&network=g',
@@ -35,7 +36,7 @@ export const TEST_URLS = {
     'tel:1-800-555-1212',
   ],
   NORMALIZED_URL: 'https://example.com/path?a=1&b=2',
-  NORMALIZED_URL_VARIATIONS:  [
+  NORMALIZED_URL_VARIATIONS: [
     'http://example.com/path?a=1&b=2',
     'https://example.com/path/?a=1&b=2',
     'https://example.com:8080/path?a=1&b=2',
@@ -49,15 +50,12 @@ export const TEST_URLS = {
     'https://user:pass@example.com/path?a=1&b=2',
     'https://example.com/path?a=1&b=2#anchor',
   ],
-  UNPARSABLE_URLS: ['extremely not a URL', '23.50', 'http://']
+  UNPARSABLE_URLS: ['extremely not a URL', '23.50', 'http://'],
 };
 
 test('serialization lifecycle', (t) => {
   const url = new ParsedUrl(TEST_URLS.URL_WITH_ALL_FEATURES);
-  t.is(
-    (JSON.parse(url.serialize()) as ParsedUrl).href,
-    url.href
-  );
+  t.is((JSON.parse(url.serialize()) as ParsedUrl).href, url.href);
 });
 
 test('subdomain alteration', (t) => {
