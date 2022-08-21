@@ -1,12 +1,14 @@
-import {ParsedUrl} from '../src';
-import {UrlMutators} from '../src/mutations';
-import * as fixtures from './setup';
+import test from 'ava';
+import { ParsedUrl, UrlMutators } from '../source/index.js';
+import { testUrls } from './parsed-url.test.js';
 
-test('default normalizer works', () => {
-  const referenceUrl = new ParsedUrl(fixtures.NORMALIZED_URL.normalized);
-  fixtures.NORMALIZED_URL.variations.forEach(u => {
-    expect(UrlMutators.DefaultNormalizer(new ParsedUrl(u)).href).toBe(
-      referenceUrl.href
+test('default normalizer works', (t) => {
+  const url = testUrls.normalizedUrl;
+  const referenceUrl = new ParsedUrl(url);
+  for (const u of testUrls.normalizedUrlVariations) {
+    t.is(
+      UrlMutators.DefaultNormalizer(new ParsedUrl(u)).href,
+      referenceUrl.href,
     );
-  });
+  }
 });

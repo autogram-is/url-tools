@@ -1,22 +1,23 @@
-import {ParsedUrlSet, NormalizedUrlSet} from '../src';
-import * as fixtures from './setup';
+import test from 'ava';
+import { ParsedUrlSet, NormalizedUrlSet } from '../source/index.js';
+import { testUrls } from './parsed-url.test.js';
 
-test('url ignores invalid URLs', () => {
-  const set = new ParsedUrlSet(fixtures.UNPARSABLE_URLS);
-  expect(set.size).toBe(0);
+test('ignores invalid URLs', (t) => {
+  const set = new ParsedUrlSet(testUrls.unparsableUrls);
+  t.is(set.size, 0);
 });
 
-test('url set tracks unparsable rejections', () => {
+test('track unparsable rejections', (t) => {
   const set = new NormalizedUrlSet([
-    fixtures.NORMALIZED_URL.normalized,
-    ...fixtures.UNPARSABLE_URLS,
+    testUrls.normalizedUrl,
+    ...testUrls.unparsableUrls,
   ]);
 
-  expect(set.unparsable.size).toBe(fixtures.UNPARSABLE_URLS.length);
-  expect(set.size).toBe(1);
+  t.is(set.unparsable.size, testUrls.unparsableUrls.length);
+  t.is(set.size, 1);
 });
 
-test('url set culls duplicates', () => {
-  const set = new NormalizedUrlSet(fixtures.NORMALIZED_URL.variations);
-  expect(set.size).toBe(1);
+test('cull duplicates', (t) => {
+  const set = new NormalizedUrlSet(testUrls.normalizedUrlVariations);
+  t.is(set.size, 1);
 });

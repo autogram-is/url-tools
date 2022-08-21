@@ -1,21 +1,21 @@
-import {NormalizedUrl} from '../src';
+import test from 'ava';
+import { NormalizedUrl, UrlFilters, UrlMutators } from '../source/index.js';
+import { testUrls } from './parsed-url.test.js';
 
-import * as fixtures from './setup';
-
-test('normalizer is applied correctly', () => {
+test('normalizer is applied correctly', (t) => {
   // 'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor';
+  NormalizedUrl.normalizer = UrlMutators.StripQueryParams;
+  const url = new NormalizedUrl(testUrls.urlWithAllFeatures);
 
-  const url = new NormalizedUrl(fixtures.URL_WITH_ALL_FEATURES);
-
-  expect(url.raw).toEqual(fixtures.URL_WITH_ALL_FEATURES);
-  expect(url.href).toEqual(
-    'https://subdomain.subdomain.domain.com/directory/filename.html?firstParam=1&secondParam=2'
+  t.is(
+    url.href,
+    'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor',
   );
 
   const url2 = new NormalizedUrl(
-    fixtures.URL_WITH_ALL_FEATURES,
+    testUrls.urlWithAllFeatures,
     undefined,
-    u => u
+    (u) => u,
   );
-  expect(url2.href).toEqual(fixtures.URL_WITH_ALL_FEATURES);
+  t.is(url2.href, testUrls.urlWithAllFeatures);
 });
