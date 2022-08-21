@@ -1,9 +1,10 @@
 import { URL } from 'node:url';
 import { ParsedUrl } from './parsed-url.js';
-import { UrlMutators, UrlMutator } from './mutations.js';
+import * as UrlMutators from './mutators.js';
+import { UrlMutator } from './index.js';
 
 export class NormalizedUrl extends ParsedUrl {
-  static normalizer: UrlMutator = UrlMutators.DefaultNormalizer;
+  static normalizer: UrlMutator = UrlMutators.defaultNormalizer;
   original: string;
 
   constructor(

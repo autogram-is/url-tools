@@ -1,6 +1,9 @@
 import { URL } from 'node:url';
 import { getDomain, getPublicSuffix, getSubdomain } from 'tldts';
 
+export type UrlMutator = (url: ParsedUrl) => ParsedUrl;
+export type UrlFilter = (url: ParsedUrl) => boolean;
+
 export class ParsedUrl extends URL {
   get domain(): string {
     return getDomain(this.hostname) ?? '';

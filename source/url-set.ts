@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
-import { UrlMutator } from './mutations.js';
 import { NormalizedUrl } from './normalized-url.js';
 import { ParsedUrl } from './parsed-url.js';
+import { UrlMutator } from './index.js';
 
 abstract class UrlTypeSet<T extends URL> extends Set<T> {
   verifier = new Set<string>();
