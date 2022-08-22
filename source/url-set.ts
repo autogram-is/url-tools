@@ -7,7 +7,7 @@ type UrlSetOptions = {
   [key: string]: unknown;
   strict: boolean;
   base?: string | URL;
-  filter: (url: URL) => boolean;
+  urlFilter: (url: URL) => boolean;
 };
 
 export class UrlSet<T extends URL = URL> extends Set<T> {
@@ -24,7 +24,7 @@ export class UrlSet<T extends URL = URL> extends Set<T> {
     this.options = {
       strict: false,
       base: undefined,
-      filter: () => true,
+      urlFilter: () => true,
       ...options,
     };
     if (values !== undefined) this.addItems(values);
@@ -33,7 +33,7 @@ export class UrlSet<T extends URL = URL> extends Set<T> {
   override add(value: T | string): this {
     const incoming = typeof value === 'string' ? this.parse(value) : value;
     if (incoming) {
-      if (!this.options.filter(incoming)) {
+      if (!this.options.urlFilter(incoming)) {
         this.rejected.add(incoming.href);
         return this;
       }
@@ -110,7 +110,7 @@ export class UrlSet<T extends URL = URL> extends Set<T> {
 }
 
 type ParsedUrlSetOptions = UrlSetOptions & {
-  filter: UrlFilter;
+  urlFilter: UrlFilter;
 };
 export class ParsedUrlSet extends UrlSet<ParsedUrl> {
   rejected = new Set<string>();
@@ -134,7 +134,7 @@ export class ParsedUrlSet extends UrlSet<ParsedUrl> {
 }
 
 type NormalizedUrlSetOptions = ParsedUrlSetOptions & {
-  filter: UrlFilter;
+  urlFilter: UrlFilter;
   normalizer: UrlMutator;
 };
 
