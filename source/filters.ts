@@ -44,7 +44,7 @@ export const isSocialShareLink = function (url: ParsedUrl): boolean {
   );
 };
 
-export const isIP = function (url: ParsedUrl): boolean {
+export const isIp = function (url: ParsedUrl): boolean {
   const tld = parse(url.href);
   return tld.isIp ?? false;
 };
