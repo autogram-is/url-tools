@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import { getDomain, getPublicSuffix, getSubdomain } from 'tldts';
+import { getDomain, getPublicSuffix, getSubdomain, parse } from 'tldts';
 
 export type UrlMutator = (url: ParsedUrl) => ParsedUrl;
 export type UrlFilter = (url: ParsedUrl) => boolean;
@@ -11,6 +11,10 @@ export class ParsedUrl extends URL {
 
   set domain(value: string) {
     this.hostname = [this.subdomain, value].join('.');
+  }
+
+  get domainWithoutSuffix(): string {
+    return parse(this.href).domainWithoutSuffix ?? '';
   }
 
   get subdomain(): string {
@@ -28,7 +32,7 @@ export class ParsedUrl extends URL {
 
   get path(): string[] {
     if (this.pathname === '/') return [];
-    return this.pathname.split('/');
+    return this.pathname.slice(1).split('/');
   }
 
   get properties(): Record<
@@ -45,6 +49,7 @@ export class ParsedUrl extends URL {
       host: super.host,
       hostname: super.hostname,
       domain: this.domain,
+      domainWithoutSuffix: this.domainWithoutSuffix,
       subdomain: this.subdomain,
       publicSuffix: this.publicSuffix,
       href: super.href,

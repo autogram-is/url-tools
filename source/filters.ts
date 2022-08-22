@@ -1,3 +1,4 @@
+import { parse } from 'tldts';
 import { ParsedUrl } from './parsed-url.js';
 import { regExpFromStringMatch, StringMatch } from './index.js';
 
@@ -41,4 +42,9 @@ export const isSocialShareLink = function (url: ParsedUrl): boolean {
     (url.domain === 'facebook.com' &&
       url.pathname.startsWith('/sharer/sharer.php'))
   );
+};
+
+export const isIP = function (url: ParsedUrl): boolean {
+  const tld = parse(url.href);
+  return tld.isIp ?? false;
 };
