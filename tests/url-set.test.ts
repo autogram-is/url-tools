@@ -1,6 +1,6 @@
 import test from 'ava';
 import { ParsedUrlSet, NormalizedUrlSet } from '../source/index.js';
-import { testUrls } from './parsed-url.test.js';
+import { testUrls } from './fixtures/urls.js';
 
 test('ignores invalid URLs', (t) => {
   const set = new ParsedUrlSet(testUrls.unparsableUrls);

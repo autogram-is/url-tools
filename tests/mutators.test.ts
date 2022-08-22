@@ -1,6 +1,6 @@
 import test from 'ava';
 import { ParsedUrl, UrlMutators } from '../source/index.js';
-import { testUrls } from './parsed-url.test.js';
+import { testUrls } from './fixtures/urls.js';
 
 test('default normalizer works', (t) => {
   const url = testUrls.normalizedUrl;

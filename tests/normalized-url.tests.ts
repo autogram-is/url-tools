@@ -1,6 +1,6 @@
 import test from 'ava';
-import { NormalizedUrl, UrlFilters, UrlMutators } from '../source/index.js';
-import { testUrls } from './parsed-url.test.js';
+import { NormalizedUrl, UrlMutators } from '../source/index.js';
+import { testUrls } from './fixtures/urls.js';
 
 test('normalizer is applied correctly', (t) => {
   // 'https://user:password@subdomain.subdomain.domain.com:8080/directory/filename.html?firstParam=1&secondParam=2#anchor';
