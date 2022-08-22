@@ -14,19 +14,49 @@ URL Tools is a helper library whose sole purpose is making that process just a l
 `npm install @autogram/url-tools`
 
 ## Usage
+`ParsedUrl` and `NormalizedUrl` are meant to work as drop-in replacements for the built-in `URL` class.
 
-UrlSet is the simplest example; toss URLs at it, and parsed URLs come out. Any that couldn't be parsed can be found the `urlSet.unparsable` property.
+```
+import { ParsedUrl } from '@autogram/url-tools';
+
+const p = new ParsedUrl('http://staging.foo.com');
+console.log(p.domain);    // 'foo.com';
+console.log(p.subdomain); // 'staging';
+```
+
+### URL scrubbing and normalization
+`NormalizedUrl` applies a given `UrlMutator` function after it parses incoming URLs; by default it applies the relatively aggressive `UrlMutator.defaultNormalizer`; it strips off 'www' subdomains, `utm` querystring parameters, authentication information, ports, common index pages like `index.html` and `default.aspx`, page anchors, and more. It also enforces lowercasing of hostnames, and alphabetizes all remaining queryString parameters.
+
+Individual rules are broken out into discrete `UrlMutator` functions for easy composition of alternate rulesets, and any function that accepts a `NormalizedUrl` and returns a `NormalizedUrl` can be passed in to implement custom rules.
+
+```
+import { NormalizedUrl } from '@autogram/url-tools';
+
+const url = 'http://www.mydomain.com:80/index.html?utm_campaign=foo&search=bar#footer';
+const n = new NormalizedUrl(url);
+console.log(n.href); // 'https://mydomain.com/?search.bar'
+
+NormalizedUrl.normalizer = UrlMutators.stripPort;
+const n2 = new NormalizedUrl(url);
+console.log(n2.href); // 'http://www.mydomain.com/index.html?utm_campaign=foo&search=bar#footer'
+
+const n3 = new NormalizedUrl(url, undefined, (url) => new NormalizedUrl('http://total-override.com'));
+console.log(n3.href); // 'http://total-override.com'
+```
+
+### Batch parsing and de-duplication
+UrlSet is the simplest of the collection classes; toss URLs at it, and parsed URLs come out. Any that couldn't be parsed can be found the `urlSet.unparsable` property.
 
 ```
 import { UrlSet } from '@autogram/url-tools';
-const rawUrls = [
+
+const us = new UrlSet([
   'http://example.com',
   'https://127.0.0.1',
   'tel:1-800-555-1212',
   'definitely-not-a-url'
-];
+]);
 
-const us = new UrlSet(rawUrls);
 for (url of us) {
   console.log(url.href);
 }
@@ -35,18 +65,25 @@ for (url of us) {
 console.log([...us.unparsable]); // ['definitely-not-a-url']
 ```
 
+### Filtered and Normalized URL Sets
 Both `ParsedUrlSet` and `NormalizedUrlSet` can accept a `UrlFilter` function in their constructor options; incoming URLs rejected by that function are shunted to the Set's `parsedUrlSet.rejected` property and not added to the Set proper. 
 
 `NormalizedUrlSet` can rely rely on NormalizedUrl's aggressive defaults, or pass in a UrlMutator function to use as an override.
 
 ```
 import { NormalizedUrlSet, UrlFilters, UrlMutators } from '@autogram/url-tools';
+
 const options = {
-  filter: UrlFilters.isValidWebUrl,
+  urlFilter: UrlFilters.isValidWebUrl,
   normalizer: (u) => UrlMutators.forceProtocol(u, 'https')
 }
+const ns = new NormalizedUrlSet([
+  'http://example.com',
+  'https://127.0.0.1',
+  'tel:1-800-555-1212',
+  'definitely-not-a-url'
+], options);
 
-const ns = new NormalizedUrlSet(rawUrls);
 for (n of ns) {
   console.log(n.href);
 }
