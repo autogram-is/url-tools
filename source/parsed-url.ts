@@ -4,7 +4,27 @@ import { getDomain, getPublicSuffix, getSubdomain, parse } from 'tldts';
 export type UrlMutator = (url: ParsedUrl) => ParsedUrl;
 export type UrlFilter = (url: ParsedUrl) => boolean;
 
+export type UrlData = {
+  [property: string]: string | string[] | Record<string, string | string[]>;
+  href: string;
+};
 export class ParsedUrl extends URL {
+  static revive(key: string | undefined, value: string | UrlData) {
+    if (key === undefined && typeof value !== 'string') {
+      return new ParsedUrl(value);
+    }
+
+    return value;
+  }
+
+  constructor(input: string | UrlData, base?: string | URL) {
+    if (typeof input === 'string') {
+      super(input, base);
+    } else {
+      super(input.href, base);
+    }
+  }
+
   get domain(): string {
     return getDomain(this.hostname) ?? '';
   }
@@ -35,10 +55,7 @@ export class ParsedUrl extends URL {
     return this.pathname.slice(1).split('/');
   }
 
-  get properties(): Record<
-    string,
-    string | string[] | Record<string, string | string[]>
-  > {
+  get properties(): UrlData {
     const searchParameters: Record<string, string | string[]> = {};
     for (const [key, value] of super.searchParams) {
       searchParameters[key] = value;
