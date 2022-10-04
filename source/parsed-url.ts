@@ -57,28 +57,28 @@ export class ParsedUrl extends URL {
 
   get properties(): UrlData {
     const searchParameters: Record<string, string | string[]> = {};
-    for (const [key, value] of super.searchParams) {
+    for (const [key, value] of this.searchParams) {
       searchParameters[key] = value;
     }
 
     return {
-      hash: super.hash,
-      host: super.host,
-      hostname: super.hostname,
+      hash: this.hash,
+      host: this.host,
+      hostname: this.hostname,
       domain: this.domain,
       domainWithoutSuffix: this.domainWithoutSuffix,
       subdomain: this.subdomain,
       publicSuffix: this.publicSuffix,
-      href: super.href,
-      origin: super.origin,
-      password: super.password,
-      pathname: super.pathname,
+      href: this.href,
+      origin: this.origin,
+      password: this.password,
+      pathname: this.pathname,
       path: this.path,
-      port: super.port,
-      protocol: super.protocol,
-      search: super.search,
+      port: this.port,
+      protocol: this.protocol,
+      search: this.search,
       searchParams: searchParameters,
-      username: super.username,
+      username: this.username,
     };
   }
 
