@@ -8,7 +8,11 @@ export class NormalizedUrl extends ParsedUrl {
 
   static revive(key: string | undefined, value: string | UrlData) {
     if (key === undefined && typeof value !== 'string') {
-      return new NormalizedUrl(value);
+      const n = new NormalizedUrl(value);
+      if ('original' in value) {
+        n.original = value.original as string;
+      }
+      return n;
     }
 
     return value;
