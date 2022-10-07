@@ -19,3 +19,11 @@ test('normalizer is applied correctly', (t) => {
   );
   t.is(url2.href, testUrls.urlWithAllFeatures);
 });
+
+test('setting href applies normalizer', (t) => {
+  const n = new NormalizedUrl('HTTP://WWW.EXAMPLE.COM');
+  t.is(n.href, 'http://www.example.com/');
+
+  n.href = 'HTTP://WWW.EXAMPLE.COM';
+  t.is(n.href, 'http://www.example.com/');
+});
