@@ -35,7 +35,6 @@ export const testUrls = {
   normalizedUrl: 'https://example.com/path?a=1&b=2',
   normalizedUrlVariations: [
     'http://example.com/path?a=1&b=2',
-    'https://example.com/path/?a=1&b=2',
     'https://example.com:8080/path?a=1&b=2',
     'https://EXAMPLE.COM/path?a=1&b=2',
     'https://www.example.com/path?a=1&b=2',

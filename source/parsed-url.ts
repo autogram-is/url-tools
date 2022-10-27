@@ -1,9 +1,6 @@
 import { URL } from 'node:url';
 import { getDomain, getPublicSuffix, getSubdomain, parse } from 'tldts';
 
-export type UrlMutator = (url: ParsedUrl) => ParsedUrl;
-export type UrlFilter = (url: ParsedUrl) => boolean;
-
 export type UrlData = {
   [property: string]: string | string[] | Record<string, string | string[]>;
   href: string;

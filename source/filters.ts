@@ -1,34 +1,43 @@
+import { URL } from 'node:url';
+import { match } from 'node:assert';
 import { parse } from 'tldts';
+import minimatch from 'minimatch';
 import { ParsedUrl } from './parsed-url.js';
-import { regExpFromStringMatch, StringMatch } from './index.js';
 
-export const isWebProtocol = function (url: ParsedUrl): boolean {
+export type UrlFilter<T extends URL = ParsedUrl> = (url: T) => boolean;
+
+export function isWebProtocol(url: URL): boolean {
   const webProtocols = ['http:', 'https:'];
   return webProtocols.includes(url.protocol);
-};
+}
 
-export const isAuthenticated = function (url: ParsedUrl): boolean {
+export function isAuthenticated(url: URL): boolean {
   return (url.username + url.password).length > 0;
-};
+}
 
-export const hasPublicSuffix = function (url: ParsedUrl): boolean {
+export function hasPublicSuffix(url: ParsedUrl): boolean {
   return url.publicSuffix.length > 0;
-};
+}
 
-export const matchesPattern = function (
+export function matches(
   url: ParsedUrl,
-  pattern: StringMatch = [],
+  pattern: string | RegExp,
   property = 'href',
 ): boolean {
-  if (pattern && property in url) {
-    const match = regExpFromStringMatch(pattern);
-    return match.test(url.properties[property].toString());
+  if (property in url) {
+    if (typeof pattern === 'string') {
+      return minimatch(url.properties[property].toString(), pattern);
+    }
+
+    const matches =
+      url.properties[property]?.toString().match(pattern)?.length ?? 0;
+    return matches > 0;
   }
 
   return false;
-};
+}
 
-export const isSocialShareLink = function (url: ParsedUrl): boolean {
+export function isSocialShareLink(url: ParsedUrl): boolean {
   return (
     (url.domain === 'twitter.com' &&
       url.pathname.startsWith('/intent/tweet')) || // Share links
@@ -42,9 +51,9 @@ export const isSocialShareLink = function (url: ParsedUrl): boolean {
     (url.domain === 'facebook.com' &&
       url.pathname.startsWith('/sharer/sharer.php'))
   );
-};
+}
 
-export const isIp = function (url: ParsedUrl): boolean {
+export function isIp(url: URL): boolean {
   const tld = parse(url.href);
   return tld.isIp ?? false;
-};
+}

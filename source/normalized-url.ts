@@ -1,10 +1,9 @@
 import { URL } from 'node:url';
 import { ParsedUrl, UrlData } from './parsed-url.js';
-import * as UrlMutators from './mutators.js';
-import { UrlMutator } from './index.js';
+import { UrlMutators } from './index.js';
 
 export class NormalizedUrl extends ParsedUrl {
-  static normalizer: UrlMutator = UrlMutators.defaultNormalizer;
+  static normalizer: UrlMutators.UrlMutator = UrlMutators.defaultNormalizer;
 
   static revive(key: string | undefined, value: string | UrlData) {
     if (key === undefined && typeof value !== 'string') {
@@ -12,6 +11,7 @@ export class NormalizedUrl extends ParsedUrl {
       if ('original' in value) {
         n.original = value.original as string;
       }
+
       return n;
     }
 
@@ -23,7 +23,7 @@ export class NormalizedUrl extends ParsedUrl {
   constructor(
     input: string | UrlData,
     base?: URL | string,
-    normalizer: UrlMutator = NormalizedUrl.normalizer,
+    normalizer: UrlMutators.UrlMutator = NormalizedUrl.normalizer,
   ) {
     super(input, base);
     this.original = super.href;

@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { NormalizedUrl } from './normalized-url.js';
-import { ParsedUrl, UrlFilter } from './parsed-url.js';
-import { UrlMutator } from './index.js';
+import { ParsedUrl } from './parsed-url.js';
+import { UrlMutators, UrlFilters } from './index.js';
 
 type UrlSetOptions = {
   [key: string]: unknown;
@@ -110,7 +110,7 @@ export class UrlSet<T extends URL = URL> extends Set<T> {
 }
 
 type ParsedUrlSetOptions = UrlSetOptions & {
-  urlFilter: UrlFilter;
+  urlFilter: UrlFilters.UrlFilter;
 };
 export class ParsedUrlSet extends UrlSet<ParsedUrl> {
   rejected = new Set<string>();
@@ -134,8 +134,8 @@ export class ParsedUrlSet extends UrlSet<ParsedUrl> {
 }
 
 type NormalizedUrlSetOptions = ParsedUrlSetOptions & {
-  urlFilter: UrlFilter;
-  normalizer: UrlMutator;
+  urlFilter: UrlFilters.UrlFilter;
+  normalizer: UrlMutators.UrlMutator;
 };
 
 export class NormalizedUrlSet extends UrlSet<NormalizedUrl> {

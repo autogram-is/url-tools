@@ -1,7 +1,12 @@
+import { URL } from 'node:url';
+import minimatch from 'minimatch';
 import { ParsedUrl } from './parsed-url.js';
-import { StringMatch, regExpFromStringMatch } from './index.js';
 
-export const defaultNormalizer = function (url: ParsedUrl): ParsedUrl {
+export type UrlMutator<I extends URL = ParsedUrl, O extends I = I> = (
+  url: I,
+) => O;
+
+export function defaultNormalizer(url: ParsedUrl): ParsedUrl {
   url = forceLowercaseHostname(url);
   url = forceProtocol(url);
   url = stripAuthentication(url);
@@ -9,16 +14,15 @@ export const defaultNormalizer = function (url: ParsedUrl): ParsedUrl {
   url = stripIndexPages(url);
   url = stripPort(url);
   url = stripSubdomains(url);
-  url = stripTrailingSlash(url);
   url = stripQueryParameters(url);
   url = sortQueryParameters(url);
   return url;
-};
+}
 
-export const forceLowercaseHostname = function (url: ParsedUrl): ParsedUrl {
+export function forceLowercaseHostname(url: ParsedUrl): ParsedUrl {
   url.hostname = url.hostname.toLowerCase();
   return url;
-};
+}
 
 export const forceProtocol = function (
   url: ParsedUrl,
@@ -28,10 +32,7 @@ export const forceProtocol = function (
   return url;
 };
 
-export const stripIndexPages = function (
-  url: ParsedUrl,
-  indexes?: string[],
-): ParsedUrl {
+export function stripIndexPages(url: ParsedUrl, indexes?: string[]): ParsedUrl {
   indexes = indexes ?? ['index.htm', 'index.html', 'default.aspx', 'index.php'];
   for (const i of indexes) {
     if (url.pathname.endsWith(i)) {
@@ -40,56 +41,62 @@ export const stripIndexPages = function (
   }
 
   return url;
-};
+}
 
-export const stripAnchor = function (url: ParsedUrl): ParsedUrl {
+export function stripAnchor(url: ParsedUrl): ParsedUrl {
   url.hash = '';
   return url;
-};
+}
 
-export const stripAuthentication = function (url: ParsedUrl): ParsedUrl {
+export function stripAuthentication(url: ParsedUrl): ParsedUrl {
   url.username = '';
   url.password = '';
   return url;
-};
+}
 
-export const stripPort = function (url: ParsedUrl): ParsedUrl {
+export function stripPort(url: ParsedUrl): ParsedUrl {
   url.port = '';
   return url;
-};
+}
 
-export const stripQueryParameters = function (
+export function stripQueryParameters(
   url: ParsedUrl,
-  options: StringMatch = /^utm_\s+|src|referrer|referer/,
+  pattern: string | RegExp = '{utm_*,src,referer,referrer}',
 ): ParsedUrl {
-  const stripList = regExpFromStringMatch(options);
   for (const [name] of url.searchParams) {
-    if (stripList.test(name)) {
+    if (typeof pattern === 'string') {
+      if (minimatch(name, pattern)) {
+        url.searchParams.delete(name);
+        continue;
+      }
+    } else if (pattern.test(name)) {
       url.searchParams.delete(name);
+      continue;
     }
   }
 
   return url;
-};
+}
 
-export const stripSubdomains = function (
+export function stripSubdomains(
   url: ParsedUrl,
-  options: StringMatch = /^ww[w\d]+/,
+  pattern: string | RegExp = /^w{2,3}\d*$/,
 ): ParsedUrl {
-  const stripList = regExpFromStringMatch(options);
-  if (stripList.test(url.subdomain)) url.subdomain = '';
+  if (typeof pattern === 'string') {
+    if (minimatch(url.subdomain, pattern)) url.subdomain = '';
+  } else if (pattern.test(url.subdomain)) url.subdomain = '';
   return url;
-};
+}
 
-export const stripTrailingSlash = function (url: ParsedUrl): ParsedUrl {
+export function stripTrailingSlash(url: ParsedUrl): ParsedUrl {
   if (url.pathname.endsWith('/')) {
     url.pathname = url.pathname.slice(0, Math.max(0, url.pathname.length - 1));
   }
 
   return url;
-};
+}
 
-export const sortQueryParameters = function (url: ParsedUrl): ParsedUrl {
+export function sortQueryParameters(url: ParsedUrl): ParsedUrl {
   url.searchParams.sort();
   return url;
-};
+}
