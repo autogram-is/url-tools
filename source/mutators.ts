@@ -31,12 +31,12 @@ export const forceProtocol = function (
   return url;
 };
 
-export function stripIndexPages(url: ParsedUrl, indexes?: string[]): ParsedUrl {
-  indexes = indexes ?? ['index.htm', 'index.html', 'default.aspx', 'index.php'];
-  for (const i of indexes) {
-    if (url.pathname.endsWith(i)) {
-      url.pathname = url.pathname.replace(i, '');
-    }
+export function stripIndexPages(
+  url: ParsedUrl,
+  pattern = '**/{index,default}.{htm,html,aspx,php}',
+): ParsedUrl {
+  if (minimatch(url.pathname, pattern)) {
+    url.pathname = url.pathname.split('/').slice(-1).join('/');
   }
 
   return url;
@@ -60,15 +60,10 @@ export function stripPort(url: ParsedUrl): ParsedUrl {
 
 export function stripQueryParameters(
   url: ParsedUrl,
-  pattern: string | RegExp = '{utm_*,src,referer,referrer}',
+  pattern = '{utm_*,src}',
 ): ParsedUrl {
   for (const [name] of url.searchParams) {
-    if (typeof pattern === 'string') {
-      if (minimatch(name, pattern)) {
-        url.searchParams.delete(name);
-        continue;
-      }
-    } else if (pattern.test(name)) {
+    if (minimatch(name, pattern)) {
       url.searchParams.delete(name);
       continue;
     }
@@ -77,13 +72,8 @@ export function stripQueryParameters(
   return url;
 }
 
-export function stripSubdomains(
-  url: ParsedUrl,
-  pattern: string | RegExp = /^w{2,3}\d*$/,
-): ParsedUrl {
-  if (typeof pattern === 'string') {
-    if (minimatch(url.subdomain, pattern)) url.subdomain = '';
-  } else if (pattern.test(url.subdomain)) url.subdomain = '';
+export function stripSubdomains(url: ParsedUrl, pattern = 'ww*'): ParsedUrl {
+  if (minimatch(url.subdomain, pattern)) url.subdomain = '';
   return url;
 }
 

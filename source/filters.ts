@@ -20,17 +20,11 @@ export function hasPublicSuffix(url: ParsedUrl): boolean {
 
 export function matches(
   url: ParsedUrl,
-  pattern: string | RegExp,
+  pattern: string,
   property = 'href',
 ): boolean {
   if (property in url) {
-    if (typeof pattern === 'string') {
-      return minimatch(url.properties[property].toString(), pattern);
-    }
-
-    const matches =
-      url.properties[property]?.toString().match(pattern)?.length ?? 0;
-    return matches > 0;
+    return minimatch(url.properties[property].toString(), pattern);
   }
 
   return false;
