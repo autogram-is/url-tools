@@ -1,4 +1,3 @@
-import { URL } from 'node:url';
 import { match } from 'node:assert';
 import { parse } from 'tldts';
 import minimatch from 'minimatch';

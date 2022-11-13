@@ -1,4 +1,3 @@
-import { URL } from 'node:url';
 import { ParsedUrl, UrlData } from './parsed-url.js';
 import { UrlMutators } from './index.js';
 

@@ -1,4 +1,3 @@
-import { URL } from 'node:url';
 import { NormalizedUrl } from './normalized-url.js';
 import { ParsedUrl } from './parsed-url.js';
 import { UrlMutators, UrlFilters } from './index.js';

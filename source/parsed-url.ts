@@ -1,4 +1,3 @@
-import { URL } from 'node:url';
 import { getDomain, getPublicSuffix, getSubdomain, parse } from 'tldts';
 
 export type UrlData = {

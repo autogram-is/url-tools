@@ -1,4 +1,3 @@
-import { URL } from 'node:url';
 import minimatch from 'minimatch';
 import { ParsedUrl } from './parsed-url.js';
 
