@@ -62,9 +62,10 @@ export function stripQueryParameters(
   url: ParsedUrl,
   pattern = '{utm_*,src}',
 ): ParsedUrl {
-  for (const [name] of url.searchParams) {
-    if (minimatch(name, pattern)) {
-      url.searchParams.delete(name);
+  const keys = [...url.searchParams.keys()];
+  for (const key of keys) {
+    if (minimatch(key, pattern)) {
+      url.searchParams.delete(key);
       continue;
     }
   }
@@ -79,7 +80,7 @@ export function stripSubdomains(url: ParsedUrl, pattern = 'ww*'): ParsedUrl {
 
 export function stripTrailingSlash(url: ParsedUrl): ParsedUrl {
   if (url.pathname.endsWith('/')) {
-    url.pathname = url.pathname.slice(0, Math.max(0, url.pathname.length - 1));
+    url.pathname = url.pathname.slice(0, -1);
   }
 
   return url;

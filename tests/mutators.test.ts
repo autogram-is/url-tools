@@ -1,5 +1,6 @@
 import test from 'ava';
-import { ParsedUrl, UrlMutators } from '../source/index.js';
+import minimatch from 'minimatch';
+import { NormalizedUrl, ParsedUrl, UrlMutators } from '../source/index.js';
 import { testUrls } from './fixtures/urls.js';
 
 test('default normalizer works', (t) => {
@@ -11,4 +12,16 @@ test('default normalizer works', (t) => {
       referenceUrl.href,
     );
   }
+});
+
+test('wildcard stripping works', (t) => {
+  const url = testUrls.normalizedUrl;
+  const referenceUrl = new ParsedUrl(url);
+  referenceUrl.search = '';
+
+  const compareUrl = new NormalizedUrl(url, undefined, (url) =>
+    UrlMutators.stripQueryParameters(url, '*'),
+  );
+
+  t.is(compareUrl.href, referenceUrl.href);
 });
