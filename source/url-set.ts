@@ -144,6 +144,7 @@ export class NormalizedUrlSet extends UrlSet<NormalizedUrl> {
     options: Partial<NormalizedUrlSetOptions> = {},
   ) {
     super(values, options);
+    this.options.normalizer = options.normalizer ?? NormalizedUrl.normalizer;
     if (values !== undefined) this.addItems(values);
   }
 
@@ -153,7 +154,12 @@ export class NormalizedUrlSet extends UrlSet<NormalizedUrl> {
     recursing = false,
   ): NormalizedUrl | false {
     const url = super.parse(input, base, recursing);
-    if (url) return new NormalizedUrl(url.href);
+    if (url)
+      return new NormalizedUrl(
+        url.href,
+        this.options.base,
+        this.options.normalizer,
+      );
     return false;
   }
 }
