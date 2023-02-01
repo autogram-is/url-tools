@@ -1,5 +1,10 @@
 import test from 'ava';
-import { ParsedUrl, ParsedUrlSet, NormalizedUrlSet, UrlMutators } from '../source/index.js';
+import {
+  ParsedUrl,
+  ParsedUrlSet,
+  NormalizedUrlSet,
+  UrlMutators,
+} from '../source/index.js';
 import { testUrls } from './fixtures/urls.js';
 
 test('ignores invalid URLs', (t) => {
@@ -23,12 +28,14 @@ test('cull duplicates', (t) => {
 });
 
 test('custom normalizer', (t) => {
-  const normalizer: UrlMutators.UrlMutator = url => {
+  const normalizer: UrlMutators.UrlMutator = (url) => {
     url.href = 'https://forced-url.com/';
     return url;
-  }
+  };
 
-  const set = new NormalizedUrlSet(testUrls.normalizedUrlVariations, { normalizer });
+  const set = new NormalizedUrlSet(testUrls.normalizedUrlVariations, {
+    normalizer,
+  });
   t.is(set.size, 1);
   t.is([...set].pop()?.href, 'https://forced-url.com/');
 });

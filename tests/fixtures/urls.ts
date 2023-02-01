@@ -47,4 +47,10 @@ export const testUrls = {
     'https://example.com/path?a=1&b=2#anchor',
   ],
   unparsableUrls: ['extremely not a URL', '23.50', 'http://'],
+  indexes: [
+    'https://example.com/index.html',
+    'https://example.com/index.htm',
+    'https://example.com/default.aspx',
+    'https://example.com/index.php',
+  ],
 };

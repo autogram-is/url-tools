@@ -36,7 +36,7 @@ export function stripIndexPages(
   pattern = '**/{index,default}.{htm,html,aspx,php}',
 ): ParsedUrl {
   if (minimatch(url.pathname, pattern)) {
-    url.pathname = url.pathname.split('/').slice(-1).join('/');
+    url.pathname = url.pathname.split('/').slice(0, -1).join('/');
   }
 
   return url;

@@ -1,9 +1,14 @@
 import test from 'ava';
 import minimatch from 'minimatch';
-import { NormalizedUrl, ParsedUrl, UrlMutators } from '../source/index.js';
+import {
+  NormalizedUrl,
+  NormalizedUrlSet,
+  ParsedUrl,
+  UrlMutators,
+} from '../source/index.js';
 import { testUrls } from './fixtures/urls.js';
 
-test('default normalizer works', (t) => {
+test('default normalizer', (t) => {
   const url = testUrls.normalizedUrl;
   const referenceUrl = new ParsedUrl(url);
   for (const u of testUrls.normalizedUrlVariations) {
@@ -14,7 +19,7 @@ test('default normalizer works', (t) => {
   }
 });
 
-test('wildcard stripping works', (t) => {
+test('wildcard querystrings', (t) => {
   const url = testUrls.normalizedUrl;
   const referenceUrl = new ParsedUrl(url);
   referenceUrl.search = '';
@@ -24,4 +29,15 @@ test('wildcard stripping works', (t) => {
   );
 
   t.is(compareUrl.href, referenceUrl.href);
+});
+
+test('index stripping', (t) => {
+  const urls = testUrls.indexes;
+  const nus = new NormalizedUrlSet(urls, {
+    normalizer: UrlMutators.stripIndexPages,
+  });
+
+  for (const url of nus.values()) {
+    t.is(url.href, 'https://example.com/');
+  }
 });
