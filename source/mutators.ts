@@ -1,4 +1,4 @@
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import { ParsedUrl } from './parsed-url.js';
 
 export type UrlMutator<I extends URL = ParsedUrl, O extends I = I> = (
@@ -75,6 +75,16 @@ export function stripQueryParameters(
 
 export function stripSubdomains(url: ParsedUrl, pattern = 'ww*'): ParsedUrl {
   if (minimatch(url.subdomain, pattern)) url.subdomain = '';
+  return url;
+}
+
+export function stripPrefix(url: ParsedUrl, prefix = 'www.'): ParsedUrl {
+  if (url.hostname.startsWith(prefix)) url.hostname = url.hostname.slice(4);
+  return url;
+}
+
+export function addPrefix(url: ParsedUrl, prefix = 'www.'): ParsedUrl {
+  if (!url.hostname.startsWith(prefix)) url.hostname = prefix + url.hostname;
   return url;
 }
 

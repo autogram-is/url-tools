@@ -1,6 +1,6 @@
 import { match } from 'node:assert';
 import { parse } from 'tldts';
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import { ParsedUrl } from './parsed-url.js';
 
 export type UrlFilter<T extends URL = ParsedUrl> = (url: T) => boolean;
